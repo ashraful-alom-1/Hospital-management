@@ -1,38 +1,7 @@
 "use client"
 
-import { supabase } from "../lib/supabase"
-
+import ContactForm from "@/components/ui/ContactForm"
 export default function Home() {
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const formData = new FormData(e.target)
-
-    const name = formData.get("name")
-    const email = formData.get("email")
-    const message = formData.get("message")
-
-    const { error } = await supabase
-      .from("appointments")
-      .insert([
-        {
-          name,
-          email,
-          message,
-          date: new Date().toISOString(),
-        },
-      ])
-
-    if (error) {
-      alert("Error saving data ❌")
-      console.log(error)
-    } else {
-      alert("Appointment Booked Successfully ✅")
-      e.target.reset()
-    }
-  }
-
   return (
     <main className="min-h-screen bg-gray-50">
 
@@ -106,38 +75,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section (NOW WORKING) */}
-      <section className="p-10">
-        <h3 className="text-2xl font-bold text-center mb-8">Contact Us</h3>
-
-        <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white p-6 rounded shadow">
-          
-          <input 
-            name="name"
-            type="text" 
-            placeholder="Your Name" 
-            className="w-full mb-4 p-2 border rounded"
-          />
-
-          <input 
-            name="email"
-            type="email" 
-            placeholder="Your Email" 
-            className="w-full mb-4 p-2 border rounded"
-          />
-
-          <textarea 
-            name="message"
-            placeholder="Your Message" 
-            className="w-full mb-4 p-2 border rounded"
-          ></textarea>
-
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
-            Send Message
-          </button>
-
-        </form>
-      </section>
+      {/* ✅ New Modern Contact Form */}
+      <ContactForm />
 
       {/* Footer */}
       <footer className="bg-blue-600 text-white text-center p-4">
