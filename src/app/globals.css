@@ -122,9 +122,26 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased; /* Antialiased font smooth karta hai */
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth; /* Smooth scrolling enabled */
   }
+}
+
+/* Custom Scrollbar for Modern Look */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: #3b82f6; /* Blue color for medical theme */
+  border-radius: 5px;
+  border: 2px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
 }
