@@ -11,13 +11,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ✅ SEO aur Social Media Preview ke liye metadata
 export const metadata = {
   title: "Abhayapuri Care Hospital | Best Healthcare in Bongaigaon",
   description: "Abhayapuri Care Hospital offers 24/7 Emergency care, Cardiology, Maternity, and expert medical consultations in Ward No. 4, Abhayapuri, Bongaigaon.",
   keywords: "Hospital in Abhayapuri, Best Hospital Bongaigaon, Abhayapuri Care, Doctors in Bongaigaon",
-  
-  // WhatsApp/Facebook sharing ke liye
   openGraph: {
     title: "Abhayapuri Care Hospital - Your Health, Our Priority",
     description: "World-class diagnostic facilities and expert medical consultations in Abhayapuri.",
@@ -41,6 +38,13 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
+      <head>
+        {/* ✅ Font Awesome CDN Link for Icons */}
+        <link 
+          rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
       </body>

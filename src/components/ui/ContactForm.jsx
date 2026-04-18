@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 
-// ✅ Animations Variants (Puraane code se wapas laya gaya)
+// ✅ Original Animation Variants (Restored)
 const containerVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: { 
@@ -56,12 +56,12 @@ export default function ContactForm() {
     setShowQR(false);
 
     try {
-      // Date formatting for Supabase
+      // 1. Date formatting (YYYY-MM-DD)
       const selectedDateISO = new Date(form.date.getTime() - (form.date.getTimezoneOffset() * 60000))
                                 .toISOString()
                                 .split('T')[0];
 
-      // Insert into Supabase with 'Paid' status
+      // 2. Insert into Supabase
       const { error: insertError } = await supabase.from("appointments").insert([
         { 
           name: form.name, 
@@ -75,10 +75,13 @@ export default function ContactForm() {
 
       if (insertError) throw insertError;
 
-      // Trigger Email Notification
-      await fetch("/api/send", {
+      // 3. Trigger Email Notification (Backend decides the time)
+      const emailResponse = await fetch("/api/send", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({ 
           name: form.name, 
           email: form.email, 
@@ -87,17 +90,23 @@ export default function ContactForm() {
         }),
       });
 
-      // Show Success Overlay
+      if (!emailResponse.ok) {
+        const errResult = await emailResponse.json();
+        console.error("Email API Error:", errResult.error);
+      }
+
+      // 4. Success State
       setStatus('success');
       
-      // ✅ Auto-Reload logic after 4 seconds
       setTimeout(() => {
-        window.location.reload();
+        if (typeof window !== "undefined") {
+          window.location.reload();
+        }
       }, 4000);
 
     } catch (err) {
-      console.error(err);
-      alert("Error: " + err.message);
+      console.error("Submission Error:", err);
+      alert("Something went wrong: " + err.message);
       setLoading(false);
     }
   };
@@ -105,7 +114,7 @@ export default function ContactForm() {
   return (
     <div className="py-16 px-4 flex justify-center bg-slate-50 min-h-screen relative">
       
-      {/* --- PAYMENT MODAL (Ashraful Alom QR) --- */}
+      {/* --- PAYMENT MODAL --- */}
       <AnimatePresence>
         {showQR && (
           <motion.div 
@@ -168,7 +177,6 @@ export default function ContactForm() {
           </CardHeader>
 
           <CardContent className="p-8">
-            {/* ✅ SUCCESS OVERLAY WITH PROGRESS BAR */}
             <AnimatePresence>
               {status === 'success' && (
                 <motion.div
@@ -177,9 +185,8 @@ export default function ContactForm() {
                 >
                   <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-4xl mb-6">✅</div>
                   <h2 className="text-3xl font-black text-slate-900 mb-2">Booking Confirmed!</h2>
-                  <p className="text-slate-500 font-medium mb-8">Mail sent to your inbox. <br/> Page will refresh in a moment.</p>
+                  <p className="text-slate-500 font-medium mb-8">System is allotting your time slot. <br/>Check your email for details.</p>
                   
-                  {/* Visual Progress Bar for Reload */}
                   <div className="w-40 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <motion.div 
                         initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 4, ease: "linear" }}

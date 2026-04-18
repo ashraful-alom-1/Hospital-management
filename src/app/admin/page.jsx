@@ -14,7 +14,17 @@ export default function AdminPage() {
   const [selectedDoctor, setSelectedDoctor] = useState("")
   const router = useRouter()
 
-  const doctors = ["Dr. Ahmed", "Dr. Fatima", "Dr. Rahman"]
+ // Purani line hata kar ye likhiye:
+const doctors = [
+  "Dr. Ahmed", 
+  "Dr. Fatima", 
+  "Dr. Robert", 
+  "Dr. Verma", 
+  "Dr. Khan", 
+  "Dr. Ray", 
+  "Dr. Parbin", 
+  "Dr. Baruah"
+];
 
   // ✅ Fetch Appointments
   const fetchAppointments = useCallback(async () => {
