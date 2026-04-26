@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import ContactForm from "@/components/ui/ContactForm";
+import HospitalChatWidget from "@/components/ui/HospitalChatWidget";
 import { Button } from "@/components/ui/button";
 import { 
   FlaskConical, 
@@ -1240,6 +1241,7 @@ export default function Home() {
           height: 8px;
         }
       `}</style>
+      <HospitalChatWidget />
     </main>
   );
 }
