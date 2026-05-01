@@ -120,13 +120,16 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
   }
   body {
     @apply bg-background text-foreground antialiased; /* Antialiased font smooth karta hai */
+    overflow-x: hidden;
   }
   html {
     @apply font-sans;
     scroll-behavior: smooth; /* Smooth scrolling enabled */
+    overflow-x: hidden;
   }
 }
 
@@ -145,5 +148,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #2563eb;
 }
-
 

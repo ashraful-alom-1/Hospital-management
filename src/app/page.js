@@ -50,6 +50,84 @@ const fadeInUp = {
   }
 };
 
+function Modal({ isOpen, onClose, title, content, image, date, author, category, readTime }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="relative bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <button 
+          onClick={onClose}
+          className="sticky top-4 right-4 float-right z-10 bg-white rounded-full p-2 shadow-lg hover:bg-slate-100 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        
+        {image && (
+          <img src={image} alt={title} className="w-full h-64 object-cover rounded-t-3xl" />
+        )}
+        
+        <div className="p-8">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="bg-blue-100 text-blue-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
+              {category}
+            </span>
+            <span className="text-xs text-slate-500 flex items-center gap-1">
+              <Calendar className="w-3 h-3" />
+              {date}
+            </span>
+            {author && (
+              <span className="text-xs text-slate-500 flex items-center gap-1">
+                <User className="w-3 h-3" />
+                {author}
+              </span>
+            )}
+            {readTime && (
+              <span className="text-xs text-slate-500 flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {readTime}
+              </span>
+            )}
+          </div>
+          
+          <h2 className="text-3xl font-black text-slate-900 mb-6">{title}</h2>
+          
+          <div className="prose prose-lg max-w-none">
+            {content.split('\n\n').map((paragraph, idx) => (
+              <p key={idx} className="text-slate-600 leading-relaxed mb-4">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+          
+          <div className="mt-8 pt-6 border-t border-slate-200">
+            <h4 className="text-sm font-black text-slate-900 mb-3">Share this article:</h4>
+            <div className="flex gap-3">
+              <button className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-xs font-bold">
+                FB
+              </button>
+              <button className="p-2 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors text-xs font-bold">
+                TW
+              </button>
+              <button className="p-2 bg-blue-700 text-white rounded-full hover:bg-blue-800 transition-colors text-xs font-bold">
+                IN
+              </button>
+              <button className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors text-xs font-bold">
+                @
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState("home");
   const [showAllBlogs, setShowAllBlogs] = useState(false);
@@ -328,85 +406,6 @@ export default function Home() {
     }
   ];
 
-  // Modal Component for Read More
-  const Modal = ({ isOpen, onClose, title, content, image, date, author, category, readTime }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="relative bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
-        >
-          <button 
-            onClick={onClose}
-            className="sticky top-4 right-4 float-right z-10 bg-white rounded-full p-2 shadow-lg hover:bg-slate-100 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          
-          {image && (
-            <img src={image} alt={title} className="w-full h-64 object-cover rounded-t-3xl" />
-          )}
-          
-          <div className="p-8">
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-blue-100 text-blue-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
-                {category}
-              </span>
-              <span className="text-xs text-slate-500 flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {date}
-              </span>
-              {author && (
-                <span className="text-xs text-slate-500 flex items-center gap-1">
-                  <User className="w-3 h-3" />
-                  {author}
-                </span>
-              )}
-              {readTime && (
-                <span className="text-xs text-slate-500 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {readTime}
-                </span>
-              )}
-            </div>
-            
-            <h2 className="text-3xl font-black text-slate-900 mb-6">{title}</h2>
-            
-            <div className="prose prose-lg max-w-none">
-              {content.split('\n\n').map((paragraph, idx) => (
-                <p key={idx} className="text-slate-600 leading-relaxed mb-4">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-            
-            <div className="mt-8 pt-6 border-t border-slate-200">
-              <h4 className="text-sm font-black text-slate-900 mb-3">Share this article:</h4>
-              <div className="flex gap-3">
-                <button className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-xs font-bold">
-                  FB
-                </button>
-                <button className="p-2 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors text-xs font-bold">
-                  TW
-                </button>
-                <button className="p-2 bg-blue-700 text-white rounded-full hover:bg-blue-800 transition-colors text-xs font-bold">
-                  IN
-                </button>
-                <button className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors text-xs font-bold">
-                  @
-                </button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    );
-  };
-
   const navItems = [
     { id: "home", label: "Home", action: () => scrollTo('home', 80) },
     { id: "why-choose-us", label: "Why Us", action: () => scrollTo('why-choose-us', 80) },
@@ -462,42 +461,42 @@ export default function Home() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 shadow-lg"
+        className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-red-600 to-red-700 text-white py-2 sm:py-2.5 shadow-lg"
       >
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
+          <div className="flex min-w-0 items-center justify-center gap-2 text-center">
             <div className="animate-pulse">
               <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
             </div>
-            <span className="text-xs font-black uppercase tracking-wider">🚨 24/7 Emergency Helpline</span>
+            <span className="text-[10px] sm:text-xs font-black uppercase tracking-wide sm:tracking-wider">🚨 24/7 Emergency Helpline</span>
           </div>
-          <div className="flex items-center gap-4 flex-wrap justify-center">
+          <div className="flex min-w-0 w-full sm:w-auto items-center gap-2 sm:gap-4 flex-wrap justify-center text-center">
             <a 
               href="tel:+918822141629" 
-              className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-1.5 rounded-full transition-all duration-300 backdrop-blur-sm"
+              className="flex max-w-full items-center gap-2 bg-white/20 hover:bg-white/30 px-3 sm:px-4 py-1.5 rounded-full transition-all duration-300 backdrop-blur-sm"
             >
               <Phone className="w-4 h-4" />
-              <span className="font-bold text-sm">+91 8822141629</span>
+              <span className="font-bold text-xs sm:text-sm">+91 8822141629</span>
             </a>
             <span className="text-xs hidden sm:inline">|</span>
-            <span className="text-xs font-medium">Ambulance Available Within 10 Minutes</span>
+            <span className="text-[10px] sm:text-xs font-medium leading-tight">Ambulance Available Within 10 Minutes</span>
           </div>
         </div>
       </motion.div>
 
 
 {/* --- FIXED NAVBAR - RESPONSIVE & NO WRAP --- */}
-<nav className="fixed top-10 w-full z-40 px-4 md:px-8 py-4">
-  <div className="max-w-[1500px] mx-auto">
+<nav className="fixed top-[86px] sm:top-10 w-full z-40 px-3 sm:px-4 md:px-8 py-3 sm:py-4">
+  <div className="max-w-[1500px] mx-auto w-full">
     
-    <div className="bg-slate-950/80 backdrop-blur-2xl border border-white/10 rounded-2xl px-4 md:px-6 py-3 flex justify-between items-center shadow-2xl">
+    <div className="bg-slate-950/80 backdrop-blur-2xl border border-white/10 rounded-2xl px-3 sm:px-4 md:px-6 py-3 flex justify-between items-center gap-2 shadow-2xl">
       
       {/* Logo - NEVER WRAPS */}
       <motion.h1 
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }}
         onClick={() => scrollTo('home', 80)}
-        className="whitespace-nowrap text-lg md:text-xl xl:text-2xl font-black tracking-tight cursor-pointer bg-gradient-to-r from-white to-blue-400 bg-clip-text text-transparent"
+        className="min-w-0 truncate text-base sm:text-lg md:text-xl xl:text-2xl font-black tracking-tight cursor-pointer bg-gradient-to-r from-white to-blue-400 bg-clip-text text-transparent"
       >
         ABHAYAPURI CARE
       </motion.h1>
@@ -520,12 +519,12 @@ export default function Home() {
       </div>
 
       {/* Right Side */}
-      <div className="flex items-center gap-2 md:gap-3">
+      <div className="flex shrink-0 items-center gap-1.5 md:gap-3">
         
         {/* Book Button */}
         <Button 
           onClick={() => scrollTo('contact', 80)} 
-          className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 rounded-full font-bold px-4 md:px-5 h-9 md:h-10 text-xs md:text-sm transition-all active:scale-95 shadow-lg shadow-blue-600/20"
+          className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 rounded-full font-bold px-3 sm:px-4 md:px-5 h-8 sm:h-9 md:h-10 text-[11px] sm:text-xs md:text-sm transition-all active:scale-95 shadow-lg shadow-blue-600/20"
         >
           Book Now
         </Button>
@@ -533,7 +532,7 @@ export default function Home() {
         {/* Mobile Menu Button */}
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+          className="lg:hidden shrink-0 p-2 rounded-xl bg-white/5 text-white hover:bg-white/10 transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -573,7 +572,7 @@ export default function Home() {
       {/* --- HERO SECTION --- */}
       <section 
         id="home"
-        className="relative min-h-screen flex items-center justify-center pt-32 overflow-hidden px-6"
+        className="relative min-h-screen flex items-center justify-center pt-44 sm:pt-32 overflow-hidden px-4 sm:px-6"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(15, 23, 42, 0.9)), url('/ot-bg.jpg')`,
           backgroundSize: 'cover',
@@ -581,26 +580,26 @@ export default function Home() {
           backgroundAttachment: 'fixed',
         }}
       >
-        <motion.div initial="hidden" animate="visible" className="text-center max-w-5xl z-10">
+        <motion.div initial="hidden" animate="visible" className="text-center max-w-5xl w-full z-10">
           <motion.div variants={fadeInUp} className="mb-6">
-            <span className="bg-white text-blue-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
-              BONGAIGAON'S PREMIER HEALTHCARE
+            <span className="inline-block max-w-full bg-white text-blue-700 px-4 py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wide sm:tracking-widest border border-white/20">
+              BONGAIGAON&apos;S PREMIER HEALTHCARE
             </span>
           </motion.div>
           
-          <motion.h1 variants={fadeInUp} className="text-6xl md:text-[100px] font-black leading-[0.9] tracking-tight text-white mb-8">
+          <motion.h1 variants={fadeInUp} className="text-5xl sm:text-6xl md:text-[100px] font-black leading-[0.95] md:leading-[0.9] tracking-tight text-white mb-6 sm:mb-8">
             Your Health, <br/> <span className="text-blue-400 font-extrabold italic">Our Priority.</span>
           </motion.h1>
           
-          <motion.p variants={fadeInUp} className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+          <motion.p variants={fadeInUp} className="text-base sm:text-xl text-slate-300 mb-8 sm:mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
             Experience world-class diagnostic facilities and expert medical consultations 
-            with Abhayapuri Care Hospital's compassionate team.
+            with Abhayapuri Care Hospital&apos;s compassionate team.
           </motion.p>
           
           <motion.div variants={fadeInUp}>
             <Button 
               onClick={() => scrollTo('contact', 80)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-9 rounded-2xl text-xl font-black shadow-2xl transition-transform active:scale-95"
+              className="w-full max-w-[320px] sm:w-auto sm:max-w-none bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-12 py-6 sm:py-9 rounded-2xl text-base sm:text-xl font-black shadow-2xl transition-transform active:scale-95"
             >
               Book An Appointment Now
             </Button>
@@ -609,7 +608,7 @@ export default function Home() {
       </section>
 
       {/* --- WHY CHOOSE US SECTION --- */}
-      <section id="why-choose-us" className="py-32 px-6 bg-slate-50 relative z-10">
+      <section id="why-choose-us" className="py-20 sm:py-32 px-4 sm:px-6 bg-slate-50 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             initial="hidden"
@@ -619,7 +618,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <span className="text-blue-600 font-black text-sm uppercase tracking-wider mb-4 inline-block">Our Excellence</span>
-            <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-8 underline-offset-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">
               Why Choose Us
             </h2>
             <p className="text-slate-600 text-lg max-w-2xl mx-auto mt-6">
@@ -686,9 +685,9 @@ export default function Home() {
       </section>
 
       {/* --- SERVICES SECTION --- */}
-      <section id="services" className="py-32 px-6 bg-white relative z-10">
+      <section id="services" className="py-20 sm:py-32 px-4 sm:px-6 bg-white relative z-10">
         <div className="max-w-7xl mx-auto text-center mb-20">
-          <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-8 underline-offset-8">Our Services</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">Our Services</h2>
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
@@ -696,7 +695,7 @@ export default function Home() {
             { title: 'Maternity Care', icon: '🤰' },
             { title: 'Emergency Care', icon: '🚑' }
           ].map((s, i) => (
-            <motion.div key={i} whileHover={{ y: -15 }} className="p-12 rounded-[40px] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl transition-all duration-500">
+            <motion.div key={i} whileHover={{ y: -15 }} className="p-6 sm:p-12 rounded-3xl sm:rounded-[40px] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl transition-all duration-500">
               <div className="text-5xl mb-8">{s.icon}</div>
               <h3 className="text-2xl font-bold mb-4">{s.title}</h3>
               <p className="text-slate-500 font-medium">Expert treatment and care available 24/7 at Abhayapuri Care.</p>
@@ -706,7 +705,7 @@ export default function Home() {
       </section>
 
       {/* --- REVIEWS SECTION with Swiper Carousel --- */}
-      <section id="reviews" className="py-32 px-6 bg-gradient-to-br from-blue-50 to-indigo-50 relative z-10">
+      <section id="reviews" className="py-20 sm:py-32 px-4 sm:px-6 bg-gradient-to-br from-blue-50 to-indigo-50 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             initial="hidden"
@@ -719,7 +718,7 @@ export default function Home() {
               <Quote className="w-6 h-6 text-blue-600" />
               <span className="text-blue-600 font-black text-sm uppercase tracking-wider">Patient Stories</span>
             </div>
-            <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-8 underline-offset-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">
               What Our Patients Say
             </h2>
             <p className="text-slate-600 text-lg max-w-2xl mx-auto mt-6">
@@ -775,7 +774,7 @@ export default function Home() {
                   <StarRating rating={review.stars} />
                   
                   <p className="text-slate-600 mt-4 leading-relaxed italic">
-                    "{review.text}"
+                    &quot;{review.text}&quot;
                   </p>
                   
                   <div className="mt-6 pt-4 border-t border-slate-100">
@@ -800,7 +799,7 @@ export default function Home() {
       </section>
 
       {/* --- BLOG SECTION --- */}
-      <section id="blog" className="py-32 px-6 bg-white relative z-10">
+      <section id="blog" className="py-20 sm:py-32 px-4 sm:px-6 bg-white relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             initial="hidden"
@@ -813,7 +812,7 @@ export default function Home() {
               <FileText className="w-6 h-6 text-blue-600" />
               <span className="text-blue-600 font-black text-sm uppercase tracking-wider">Health Insights</span>
             </div>
-            <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-8 underline-offset-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">
               Latest Blog Posts
             </h2>
             <p className="text-slate-600 text-lg max-w-2xl mx-auto mt-6">
@@ -893,7 +892,7 @@ export default function Home() {
       </section>
 
       {/* --- NEWS SECTION --- */}
-      <section id="news" className="py-32 px-6 bg-slate-50 relative z-10">
+      <section id="news" className="py-20 sm:py-32 px-4 sm:px-6 bg-slate-50 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             initial="hidden"
@@ -906,7 +905,7 @@ export default function Home() {
               <Newspaper className="w-6 h-6 text-green-600" />
               <span className="text-green-600 font-black text-sm uppercase tracking-wider">Hospital Updates</span>
             </div>
-            <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-green-600 decoration-8 underline-offset-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase underline decoration-green-600 decoration-4 sm:decoration-8 underline-offset-8">
               News & Announcements
             </h2>
             <p className="text-slate-600 text-lg max-w-2xl mx-auto mt-6">
@@ -979,11 +978,11 @@ export default function Home() {
       {/* --- GALLERY SECTION --- */}
       <section
         id="gallery"
-        className="py-32 bg-white text-slate-900 px-6 rounded-[60px] mx-4 md:mx-10 relative overflow-hidden z-10"
+        className="py-20 sm:py-32 bg-white text-slate-900 px-4 sm:px-6 rounded-3xl sm:rounded-[60px] mx-2 sm:mx-4 md:mx-10 relative overflow-hidden z-10"
       >
         <div className="max-w-7xl mx-auto flex flex-col items-center gap-16">
           <div className="text-center max-w-2xl">
-            <h2 className="text-5xl font-black mb-8 leading-tight uppercase underline decoration-blue-600 decoration-8 underline-offset-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 leading-tight uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">
               Hospital Gallery
             </h2>
             <p className="text-slate-600 text-lg">
@@ -1037,10 +1036,10 @@ export default function Home() {
       </section>
 
       {/* --- DOCTORS SECTION --- */}
-      <section id="doctors" className="py-32 bg-slate-950 text-white px-6 rounded-[60px] mx-4 md:mx-10 relative overflow-hidden z-10">
+      <section id="doctors" className="py-20 sm:py-32 bg-slate-950 text-white px-4 sm:px-6 rounded-3xl sm:rounded-[60px] mx-2 sm:mx-4 md:mx-10 relative overflow-hidden z-10">
         <div className="max-w-7xl mx-auto flex flex-col items-center gap-16">
           <div className="text-center max-w-2xl">
-            <h2 className="text-5xl font-black mb-8 leading-tight uppercase underline decoration-blue-500 decoration-8 underline-offset-8">Expert Specialists</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 leading-tight uppercase underline decoration-blue-500 decoration-4 sm:decoration-8 underline-offset-8">Expert Specialists</h2>
             <p className="text-slate-300 text-lg mb-10">Our team consists of internationally trained specialists across all major medical sectors.</p>
             <Button variant="outline" className="border-white text-white bg-blue-600 hover:bg-white hover:text-slate-900 font-bold h-14 px-10 rounded-xl" onClick={() => scrollTo('contact', 80)}>Meet Our Doctors</Button>
           </div>
@@ -1080,10 +1079,10 @@ export default function Home() {
       </section>
 
       {/* --- LOCATION SECTION --- */}
-      <section id="location" className="py-32 px-6 bg-white relative z-10">
+      <section id="location" className="py-20 sm:py-32 px-4 sm:px-6 bg-white relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
-                <h2 className="text-5xl font-black text-slate-900 mb-8 uppercase underline decoration-blue-600 decoration-8 underline-offset-8">Find Us</h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-8 uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">Find Us</h2>
                 <div className="space-y-6 text-slate-600">
                     <div>
                         <p className="font-black text-blue-600 uppercase text-xs tracking-widest">📍 Main Location</p>
@@ -1105,16 +1104,16 @@ export default function Home() {
       </section>
 
       {/* --- CONTACT SECTION --- */}
-      <section id="contact" className="py-32 px-6 bg-slate-50 z-10 relative">
+      <section id="contact" className="py-20 sm:py-32 px-4 sm:px-6 bg-slate-50 z-10 relative">
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h2 className="text-5xl font-black text-slate-900 mb-4 uppercase underline decoration-blue-600 decoration-8 underline-offset-8">Book Your Visit</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">Book Your Visit</h2>
         </div>
         <ContactForm />
       </section>
 
       {/* --- PROFESSIONAL FOOTER --- */}
       <footer className="bg-slate-950 text-white relative z-10">
-        <div className="max-w-7xl mx-auto px-6 py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
             
             <div>
@@ -1212,7 +1211,7 @@ export default function Home() {
                 <i className="fa-brands fa-github text-lg"></i>
               </a>
             </div>
-            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">
+            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.12em] sm:tracking-[0.3em] leading-relaxed">
               © 2026 Abhayapuri Care Hospital • Bongaigaon, Assam • All Rights Reserved
             </p>
           </div>
