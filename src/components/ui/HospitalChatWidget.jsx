@@ -15,9 +15,7 @@ export default function HospitalChatWidget() {
     {
       id: 1,
       role: "assistant",
-      text: "Welcome to Abhayapuri Care. Ask me about doctors, services, booking, emergency contact, or location.",
-      actionLabel: "Book appointment",
-      actionTarget: "contact",
+      text: "Welcome to Abhayapuri Care. Describe the patient symptoms, and I will suggest the correct doctor and duty time. You can also ask about timings, booking, emergency contact, location, fees, and services.",
     },
   ]);
   const canSend = input.trim().length > 0;
@@ -224,7 +222,7 @@ export default function HospitalChatWidget() {
                     }
                   }}
                   rows={1}
-                  placeholder="Ask about doctors, booking, services..."
+                  placeholder="Example: heart problem, child fever, hospital timing..."
                   className="min-h-[52px] flex-1 resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-blue-500"
                 />
                 <button

@@ -1,8 +1,8 @@
 export const quickPrompts = [
-  "What services do you offer?",
+  "Which doctor treats heart problems?",
+  "Which doctor should I consult?",
+  "What are the hospital timings?",
   "How can I book an appointment?",
-  "Who are your doctors?",
-  "Where is the hospital located?",
 ];
 
 const hospitalFacts = {
@@ -23,11 +23,175 @@ const hospitalFacts = {
     "Insurance partner details are not listed yet on the website, but the footer already has a placeholder link for future expansion.",
 };
 
+const doctors = [
+  {
+    name: "Dr. Ahmed",
+    specialty: "Cardiology",
+    careFor: "heart, chest pain, BP, ECG, hypertension, and cardiac care",
+    duty: "Monday, Wednesday, Friday - 10:00 AM to 2:00 PM",
+    keywords: [
+      "heart",
+      "cardio",
+      "cardiology",
+      "chest pain",
+      "chest",
+      "bp",
+      "blood pressure",
+      "hypertension",
+      "ecg",
+      "heartbeat",
+      "palpitation",
+      "saans",
+      "breath",
+      "breathing",
+      "dil",
+    ],
+  },
+  {
+    name: "Dr. Fatima",
+    specialty: "Pediatrics",
+    careFor: "child fever, vaccination, cough, growth, and child health",
+    duty: "Monday to Saturday - 9:30 AM to 1:30 PM",
+    keywords: [
+      "child",
+      "children",
+      "baby",
+      "pediatric",
+      "pediatrics",
+      "kid",
+      "vaccination",
+      "vaccine",
+      "bachcha",
+      "bacha",
+      "fever in child",
+      "child fever",
+    ],
+  },
+  {
+    name: "Dr. Robert",
+    specialty: "Neurology",
+    careFor: "brain, headache, migraine, seizure, stroke symptoms, and nerve problems",
+    duty: "Tuesday, Thursday, Saturday - 11:00 AM to 3:00 PM",
+    keywords: [
+      "brain",
+      "neuro",
+      "neurology",
+      "headache",
+      "migraine",
+      "seizure",
+      "stroke",
+      "nerve",
+      "numbness",
+      "chakkar",
+      "dizziness",
+      "sir dard",
+    ],
+  },
+  {
+    name: "Dr. Verma",
+    specialty: "Oncology",
+    careFor: "cancer-related consultation, lump evaluation, biopsy guidance, and chemotherapy advice",
+    duty: "Monday, Thursday - 2:00 PM to 5:00 PM",
+    keywords: ["cancer", "oncology", "tumor", "tumour", "lump", "chemotherapy", "biopsy", "gaanth"],
+  },
+  {
+    name: "Dr. Khan",
+    specialty: "Dentistry",
+    careFor: "tooth pain, gum problems, dental cleaning, cavity, and oral care",
+    duty: "Monday to Saturday - 10:00 AM to 4:00 PM",
+    keywords: ["tooth", "teeth", "dental", "dentist", "gum", "cavity", "mouth", "daant", "dant"],
+  },
+  {
+    name: "Dr. Ray",
+    specialty: "Dermatology",
+    careFor: "skin allergy, rashes, acne, hair fall, itching, and infection",
+    duty: "Tuesday, Thursday, Saturday - 10:00 AM to 1:00 PM",
+    keywords: ["skin", "derma", "dermatology", "rash", "rashes", "acne", "hair", "itching", "allergy", "khujli"],
+  },
+  {
+    name: "Dr. Parbin",
+    specialty: "Endocrinology",
+    careFor: "diabetes, thyroid, hormone, weight changes, and sugar control",
+    duty: "Monday, Wednesday, Friday - 3:00 PM to 6:00 PM",
+    keywords: ["diabetes", "sugar", "thyroid", "hormone", "endocrine", "endocrinology", "weight"],
+  },
+  {
+    name: "Dr. Baruah",
+    specialty: "General Surgery",
+    careFor: "appendix, hernia, gallbladder, wounds, piles, and surgery consultation",
+    duty: "Tuesday, Friday - 2:00 PM to 6:00 PM",
+    keywords: ["surgery", "surgeon", "appendix", "hernia", "gallbladder", "wound", "piles", "operation"],
+  },
+];
+
+const symptomHelpKeywords = [
+  "which doctor",
+  "kaunsa doctor",
+  "konsa doctor",
+  "kis doctor",
+  "doctor dikhana",
+  "doctor dikhaun",
+  "not sure",
+  "pata nahi",
+  "samajh nahi",
+  "problem hai",
+  "bimari",
+  "disease",
+  "symptom",
+  "symptoms",
+];
+
+const emergencyKeywords = [
+  "emergency",
+  "urgent",
+  "ambulance",
+  "severe chest pain",
+  "bahut chest pain",
+  "heart attack",
+  "unconscious",
+  "behosh",
+  "stroke",
+  "heavy bleeding",
+  "saans nahi",
+];
+
+function includesAny(text, keywords) {
+  return keywords.some((keyword) => text.includes(keyword));
+}
+
+function getAllDoctorsText() {
+  return doctors
+    .map((doctor) => `${doctor.name} (${doctor.specialty}) - Duty: ${doctor.duty}`)
+    .join("\n");
+}
+
+function getDoctorReply(doctor) {
+  return {
+    text: `For ${doctor.careFor}, you should consult ${doctor.name} (${doctor.specialty}). Duty time: ${doctor.duty}. Would you like to book an appointment? If the patient has emergency symptoms such as severe pain, breathing difficulty, unconsciousness, or heavy bleeding, please call ${hospitalFacts.emergencyPhone} immediately.`,
+    actionLabel: "Book appointment",
+    actionTarget: "contact",
+    nextTopic: "contact",
+  };
+}
+
+function findDoctorBySymptoms(normalized) {
+  return doctors.find((doctor) => includesAny(normalized, doctor.keywords));
+}
+
+function wantsAllDoctors(normalized) {
+  return (
+    includesAny(normalized, ["all doctor", "all doctors", "sabhi doctor", "sare doctor", "list doctor", "doctor list"]) ||
+    normalized === "doctors" ||
+    normalized === "doctor" ||
+    normalized === "who are your doctors"
+  );
+}
+
 const knowledgeBase = [
   {
     keywords: ["hello", "hi", "hey", "namaste", "assalamualaikum"],
     reply: {
-      text: `Hello! I'm the ${hospitalFacts.name} AI assistant. I can help with doctors, services, appointments, emergency contact, OPD hours, facilities, fees, and location.`,
+      text: `Hello! I am the ${hospitalFacts.name} AI assistant. You can describe symptoms such as heart or chest pain, child fever, headache, tooth pain, skin problems, diabetes, or a surgery concern. I will suggest the suitable doctor and duty time.`,
     },
   },
   {
@@ -41,15 +205,15 @@ const knowledgeBase = [
   {
     keywords: ["doctor", "doctors", "specialist", "specialists"],
     reply: {
-      text: "Our featured doctors include Dr. Ahmed (Cardiology), Dr. Fatima (Pediatrics), Dr. Robert (Neurology), Dr. Verma (Oncology), Dr. Khan (Dentistry), Dr. Ray (Dermatology), Dr. Parbin (Endocrinology), and Dr. Baruah (General Surgery).",
+      text: `Please tell me the patient problem first, then I can suggest the correct doctor. Example: heart/chest pain, child fever, headache, teeth pain, skin allergy, diabetes/thyroid, cancer concern, or surgery problem.\n\nIf you want the full doctor list, ask "all doctors".`,
       actionLabel: "Meet doctors",
       actionTarget: "doctors",
     },
   },
   {
-    keywords: ["opd", "outpatient", "timing", "timings", "hours", "open", "opening", "schedule"],
+    keywords: ["opd", "outpatient", "timing", "timings", "hours", "open", "opening", "schedule", "working time", "work time", "duty time"],
     reply: {
-      text: `Emergency service is available ${hospitalFacts.emergencyHours}. For project presentation, the assistant can also share OPD timing as ${hospitalFacts.opdHours}.`,
+      text: `Hospital OPD timing: ${hospitalFacts.opdHours}. Emergency service: ${hospitalFacts.emergencyHours}. Doctor duty times are different for each department. Please share the symptom or department name, and I will provide the exact doctor duty time.`,
       actionLabel: "Go to contact",
       actionTarget: "contact",
     },
@@ -81,7 +245,7 @@ const knowledgeBase = [
   {
     keywords: ["emergency", "urgent", "ambulance", "24/7", "24 hours"],
     reply: {
-      text: `Emergency service is available ${hospitalFacts.emergencyHours}. The emergency contact shown on the website is ${hospitalFacts.emergencyPhone}. For a real emergency, please call directly instead of waiting for chat replies.`,
+      text: `Emergency service is available ${hospitalFacts.emergencyHours}. Emergency contact: ${hospitalFacts.emergencyPhone}. If the patient has severe chest pain, breathlessness, stroke symptoms, unconsciousness, heavy bleeding, or a major injury, please do not wait for chat replies. Call directly or visit the emergency ward.`,
     },
   },
   {
@@ -139,7 +303,7 @@ const knowledgeBase = [
     },
   },
   {
-    keywords: ["ai", "chatbot", "assistant", "help"],
+    keywords: ["chatbot", "assistant", "help"],
     reply: {
       text: "This assistant is designed for your final-year project to give fast hospital information in a free and simple way. It is not a medical diagnosis tool, but it helps visitors navigate the website and basic services.",
     },
@@ -204,6 +368,35 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     };
   }
 
+  if (includesAny(normalized, emergencyKeywords)) {
+    return {
+      text: `This may be an emergency. ${hospitalFacts.name} provides emergency service ${hospitalFacts.emergencyHours}. Please call ${hospitalFacts.emergencyPhone} immediately or visit the nearest emergency ward. If the patient is stable, describe the symptoms and I can suggest a suitable doctor.`,
+      nextTopic: "contact",
+    };
+  }
+
+  const matchedDoctor = findDoctorBySymptoms(normalized);
+
+  if (matchedDoctor) {
+    return getDoctorReply(matchedDoctor);
+  }
+
+  if (wantsAllDoctors(normalized)) {
+    return {
+      text: `Our doctors:\n${getAllDoctorsText()}\n\nIf the patient has a specific problem, type the symptom. I will suggest only the relevant doctor.`,
+      actionLabel: "Meet doctors",
+      actionTarget: "doctors",
+      nextTopic: "doctors",
+    };
+  }
+
+  if (includesAny(normalized, symptomHelpKeywords)) {
+    return {
+      text: "What problem is the patient facing? Please describe the symptoms briefly, such as chest pain or heart problem, child fever, headache, tooth pain, skin rash, diabetes or thyroid issue, cancer-related lump, surgery concern, or wound. I will suggest the correct doctor name and duty time based on the symptoms.",
+      nextTopic: "doctors",
+    };
+  }
+
   const isFollowUpQuestion =
     normalized.includes("more") ||
     normalized.includes("details") ||
@@ -228,7 +421,7 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     reply = scoredMatch.reply;
   } else {
     reply = {
-      text: "I couldn't match that exactly, but I can help with services, doctors, appointments, emergency contact, location, and timings. Try asking one of those topics.",
+      text: "I could not understand the exact question. You can ask about hospital timings, appointment booking, location, emergency contact, fees, facilities, or patient symptoms. If you are not sure which doctor to consult, please describe the patient's problem.",
       actionLabel: "Book appointment",
       actionTarget: "contact",
     };
