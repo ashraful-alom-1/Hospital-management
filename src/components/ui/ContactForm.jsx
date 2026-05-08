@@ -8,6 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
+import { doctors } from "@/lib/hospital-chat";
+
+const CONSULTATION_FEE = 10;
+const UPI_ID = "ashraful.abh-2@oksbi";
 
 // ✅ Original Animation Variants (Restored)
 const containerVariants = {
@@ -34,16 +38,36 @@ export default function ContactForm() {
     name: "",
     email: "",
     phone: "",
+    doctor: "",
     date: null,
     message: ""
   });
 
   useEffect(() => {
     setIsClient(true);
+
+    const savedDoctor = localStorage.getItem("recommendedDoctor");
+    if (savedDoctor) {
+      setForm((current) => ({ ...current, doctor: savedDoctor }));
+    }
+
+    const handleDoctorRecommended = (event) => {
+      const doctor = event.detail?.doctor;
+      if (doctor) {
+        setForm((current) => ({ ...current, doctor }));
+      }
+    };
+
+    window.addEventListener("doctor-recommended", handleDoctorRecommended);
+    return () => window.removeEventListener("doctor-recommended", handleDoctorRecommended);
   }, []);
 
   const handleInitiatePayment = (e) => {
     e.preventDefault();
+    if (!form.doctor) {
+      alert("Please select a doctor first");
+      return;
+    }
     if (!form.date) {
       alert("Please select a date first");
       return;
@@ -62,16 +86,17 @@ export default function ContactForm() {
                                 .split('T')[0];
 
       // 2. Insert into Supabase
-      const { error: insertError } = await supabase.from("appointments").insert([
+      const { data: appointment, error: insertError } = await supabase.from("appointments").insert([
         { 
           name: form.name, 
           email: form.email, 
           phone: form.phone, 
+          doctor: form.doctor,
           message: form.message, 
           date: selectedDateISO,
           status: 'Paid' 
         },
-      ]);
+      ]).select("id").single();
 
       if (insertError) throw insertError;
 
@@ -86,6 +111,8 @@ export default function ContactForm() {
           name: form.name, 
           email: form.email, 
           phone: form.phone, 
+          doctor: form.doctor,
+          appointmentId: appointment?.id,
           date: selectedDateISO 
         }),
       });
@@ -126,11 +153,11 @@ export default function ContactForm() {
               className="bg-white rounded-[3rem] p-8 max-w-sm w-full text-center shadow-2xl border border-white/20"
             >
               <h3 className="text-2xl font-black text-slate-900 mb-1">Confirm Payment</h3>
-              <p className="text-slate-500 text-sm mb-6">Consultation Fee: ₹500</p>
+              <p className="text-slate-500 text-sm mb-6">Consultation Fee: Rs. {CONSULTATION_FEE}</p>
               
               <div className="bg-slate-50 p-4 rounded-[2.5rem] mb-6 border-2 border-slate-100 shadow-inner inline-block">
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=ashraful.abh-2@oksbi&pn=Ashraful%20Alom&am=500&cu=INR`} 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=Ashraful%20Alom&am=${CONSULTATION_FEE}&cu=INR`} 
                   alt="UPI QR Code"
                   className="w-48 h-48 rounded-2xl"
                 />
@@ -139,14 +166,15 @@ export default function ContactForm() {
               <div className="space-y-4">
                 <div className="bg-blue-50 py-3 rounded-2xl border border-blue-100">
                     <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest mb-1">UPI ID</p>
-                    <p className="text-sm font-bold text-slate-700">ashraful.abh-2@oksbi</p>
+                    <p className="text-sm font-bold text-slate-700">{UPI_ID}</p>
+                    <p className="mt-1 text-xs font-semibold text-slate-500">Pay Rs. {CONSULTATION_FEE} to complete the booking.</p>
                 </div>
                 
                 <Button 
                   onClick={handleFinalSubmit}
                   className="w-full h-14 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black text-lg shadow-xl shadow-green-200"
                 >
-                  I Have Paid Successfully
+                  Confirm Booking
                 </Button>
                 
                 <button 
@@ -202,6 +230,19 @@ export default function ContactForm() {
                 <Input placeholder="Full Name" className="h-14 rounded-2xl bg-slate-50/50 border-slate-100 focus:bg-white" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
                 <Input type="email" placeholder="Email Address" className="h-14 rounded-2xl bg-slate-50/50 border-slate-100 focus:bg-white" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
                 <Input type="tel" placeholder="Phone Number" className="h-14 rounded-2xl bg-slate-50/50 border-slate-100 focus:bg-white" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
+                <select
+                  value={form.doctor}
+                  onChange={(e) => setForm({ ...form, doctor: e.target.value })}
+                  className="h-14 w-full rounded-2xl border border-slate-100 bg-slate-50/50 px-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-500 focus:bg-white"
+                  required
+                >
+                  <option value="">Select Doctor</option>
+                  {doctors.map((doctor) => (
+                    <option key={doctor.name} value={doctor.name}>
+                      {doctor.name} - {doctor.specialty}
+                    </option>
+                  ))}
+                </select>
               </motion.div>
 
               <motion.div variants={itemVariants} className="space-y-3 text-center">

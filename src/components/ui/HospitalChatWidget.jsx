@@ -9,6 +9,7 @@ export default function HospitalChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [leadForms, setLeadForms] = useState({});
   const nextMessageId = useRef(2);
   const lastTopicRef = useRef("contact");
   const [messages, setMessages] = useState([
@@ -20,7 +21,16 @@ export default function HospitalChatWidget() {
   ]);
   const canSend = input.trim().length > 0;
 
-  const scrollToSection = (targetId) => {
+  const scrollToSection = (targetId, recommendedDoctor = "") => {
+    if (recommendedDoctor) {
+      localStorage.setItem("recommendedDoctor", recommendedDoctor);
+      window.dispatchEvent(
+        new CustomEvent("doctor-recommended", {
+          detail: { doctor: recommendedDoctor },
+        })
+      );
+    }
+
     const section = document.getElementById(targetId);
 
     if (!section) return;
@@ -82,6 +92,9 @@ export default function HospitalChatWidget() {
           text: assistantReply.text,
           actionLabel: assistantReply.actionLabel,
           actionTarget: assistantReply.actionTarget,
+          recommendedDoctor: assistantReply.recommendedDoctor,
+          leadForm: assistantReply.leadForm,
+          sourceQuestion: trimmed,
         },
       ]);
     } catch {
@@ -100,6 +113,79 @@ export default function HospitalChatWidget() {
     }
   };
 
+  const updateLeadForm = (messageId, field, value) => {
+    setLeadForms((current) => ({
+      ...current,
+      [messageId]: {
+        name: "",
+        email: "",
+        phone: "",
+        status: "idle",
+        ...(current[messageId] || {}),
+        [field]: value,
+      },
+    }));
+  };
+
+  const submitLeadForm = async (message) => {
+    const form = leadForms[message.id] || {};
+    const name = form.name?.trim() || "";
+    const email = form.email?.trim() || "";
+    const phone = form.phone?.trim() || "";
+
+    if (!name || !email || !phone) {
+      setLeadForms((current) => ({
+        ...current,
+        [message.id]: {
+          name,
+          email,
+          phone,
+          status: "error",
+          error: "Please add your name, email, and phone number.",
+        },
+      }));
+      return;
+    }
+
+    setLeadForms((current) => ({
+      ...current,
+      [message.id]: { ...current[message.id], status: "sending", error: "" },
+    }));
+
+    try {
+      const response = await fetch("/api/contact-lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          question: message.sourceQuestion || "",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Lead request failed");
+      }
+
+      setLeadForms((current) => ({
+        ...current,
+        [message.id]: { name, email, phone, status: "sent", error: "" },
+      }));
+    } catch {
+      setLeadForms((current) => ({
+        ...current,
+        [message.id]: {
+          ...current[message.id],
+          status: "error",
+          error: "Could not send your details. Please call +91 8822141629.",
+        },
+      }));
+    }
+  };
+
   return (
     <div className="fixed bottom-5 right-5 z-[140]">
       <AnimatePresence>
@@ -109,16 +195,16 @@ export default function HospitalChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.96 }}
             transition={{ duration: 0.22 }}
-            className="mb-4 w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-[2rem] border border-blue-100 bg-white shadow-2xl"
+            className="mb-3 flex max-h-[calc(100vh-7.5rem)] w-[calc(100vw-1.5rem)] max-w-sm flex-col overflow-hidden rounded-[2rem] border border-blue-100 bg-white shadow-2xl sm:mb-4 sm:max-h-[calc(100vh-8.5rem)] sm:w-[24rem]"
           >
-            <div className="bg-gradient-to-r from-sky-600 via-blue-600 to-cyan-500 p-5 text-white">
+            <div className="shrink-0 bg-gradient-to-r from-sky-600 via-blue-600 to-cyan-500 p-4 text-white sm:p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="mb-1 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.25em] text-blue-100">
                     <Sparkles className="h-4 w-4" />
                     AI Health Assistant
                   </p>
-                  <h3 className="text-xl font-black">Abhayapuri Care Chat</h3>
+                  <h3 className="text-lg font-black sm:text-xl">Abhayapuri Care Chat</h3>
                   <p className="mt-1 text-sm text-blue-50">
                     Free project chatbot for common hospital questions.
                   </p>
@@ -134,7 +220,7 @@ export default function HospitalChatWidget() {
               </div>
             </div>
 
-            <div className="max-h-[26rem] space-y-4 overflow-y-auto bg-slate-50 p-4">
+            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto bg-slate-50 p-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -166,11 +252,76 @@ export default function HospitalChatWidget() {
                     {message.role === "assistant" && message.actionLabel && message.actionTarget ? (
                       <button
                         type="button"
-                        onClick={() => scrollToSection(message.actionTarget)}
+                        onClick={() => scrollToSection(message.actionTarget, message.recommendedDoctor)}
                         className="mt-3 rounded-full bg-blue-50 px-3 py-2 text-xs font-bold text-blue-700 transition hover:bg-blue-100"
                       >
                         {message.actionLabel}
                       </button>
+                    ) : null}
+                    {message.role === "assistant" && message.leadForm ? (
+                      <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-3">
+                        <p className="text-sm font-black text-slate-900">
+                          Hey there, please leave your details so we can contact you even if you are no longer on the site.
+                        </p>
+                        <div className="mt-3 space-y-2">
+                          <label className="block">
+                            <span className="mb-1 block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                              Name
+                            </span>
+                            <input
+                              type="text"
+                              value={leadForms[message.id]?.name || ""}
+                              onChange={(event) => updateLeadForm(message.id, "name", event.target.value)}
+                              placeholder="Make sure to add your name."
+                              disabled={leadForms[message.id]?.status === "sent"}
+                              className="h-10 w-full rounded-xl border border-blue-100 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-blue-500 disabled:bg-slate-100"
+                            />
+                          </label>
+                          <label className="block">
+                            <span className="mb-1 block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                              Email
+                            </span>
+                            <input
+                              type="email"
+                              value={leadForms[message.id]?.email || ""}
+                              onChange={(event) => updateLeadForm(message.id, "email", event.target.value)}
+                              placeholder="Add your email address."
+                              disabled={leadForms[message.id]?.status === "sent"}
+                              className="h-10 w-full rounded-xl border border-blue-100 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-blue-500 disabled:bg-slate-100"
+                            />
+                          </label>
+                          <label className="block">
+                            <span className="mb-1 block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                              Phone
+                            </span>
+                            <input
+                              type="tel"
+                              value={leadForms[message.id]?.phone || ""}
+                              onChange={(event) => updateLeadForm(message.id, "phone", event.target.value)}
+                              placeholder="Add your phone number."
+                              disabled={leadForms[message.id]?.status === "sent"}
+                              className="h-10 w-full rounded-xl border border-blue-100 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-blue-500 disabled:bg-slate-100"
+                            />
+                          </label>
+                        </div>
+                        {leadForms[message.id]?.error ? (
+                          <p className="mt-2 text-xs font-bold text-red-600">{leadForms[message.id].error}</p>
+                        ) : null}
+                        {leadForms[message.id]?.status === "sent" ? (
+                          <p className="mt-3 rounded-xl bg-green-100 px-3 py-2 text-xs font-bold text-green-700">
+                            Thank you. Your details have been sent to the hospital team.
+                          </p>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => submitLeadForm(message)}
+                            disabled={leadForms[message.id]?.status === "sending"}
+                            className="mt-3 w-full rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-black text-white transition hover:bg-blue-700 disabled:bg-slate-300"
+                          >
+                            {leadForms[message.id]?.status === "sending" ? "Sending..." : "Submit Details"}
+                          </button>
+                        )}
+                      </div>
                     ) : null}
                   </div>
                 </div>
@@ -206,7 +357,7 @@ export default function HospitalChatWidget() {
               </div>
             </div>
 
-            <div className="border-t border-slate-200 bg-white p-4">
+            <div className="shrink-0 border-t border-slate-200 bg-white p-4">
               <div className="mb-3 rounded-2xl bg-amber-50 px-3 py-2 text-[11px] font-medium text-amber-800">
                 This chatbot provides website guidance only and should not be used for medical diagnosis.
               </div>

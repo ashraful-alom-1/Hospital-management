@@ -10,7 +10,7 @@ const hospitalFacts = {
   address: "Abhayapuri Ward No. 4, Bongaigaon, Assam - 783384",
   emergencyPhone: "+91 8822141629",
   email: "ashraful.abh@gmail.com",
-  consultationFee: "Rs. 500",
+  consultationFee: "Rs. 10",
   emergencyHours: "24 Hours / 7 Days",
   opdHours: "9:00 AM to 6:00 PM, Monday to Saturday",
   diagnostics:
@@ -23,17 +23,20 @@ const hospitalFacts = {
     "Insurance partner details are not listed yet on the website, but the footer already has a placeholder link for future expansion.",
 };
 
-const doctors = [
+export const doctors = [
   {
     name: "Dr. Ahmed",
     specialty: "Cardiology",
     careFor: "heart, chest pain, BP, ECG, hypertension, and cardiac care",
     duty: "Monday, Wednesday, Friday - 10:00 AM to 2:00 PM",
+    slotStart: "10:00",
     keywords: [
       "heart",
       "cardio",
       "cardiology",
       "chest pain",
+      "chest ache",
+      "pain in chest",
       "chest",
       "bp",
       "blood pressure",
@@ -41,6 +44,9 @@ const doctors = [
       "ecg",
       "heartbeat",
       "palpitation",
+      "heart problem",
+      "heart pain",
+      "pain in heart",
       "saans",
       "breath",
       "breathing",
@@ -52,6 +58,7 @@ const doctors = [
     specialty: "Pediatrics",
     careFor: "child fever, vaccination, cough, growth, and child health",
     duty: "Monday to Saturday - 9:30 AM to 1:30 PM",
+    slotStart: "09:30",
     keywords: [
       "child",
       "children",
@@ -72,6 +79,7 @@ const doctors = [
     specialty: "Neurology",
     careFor: "brain, headache, migraine, seizure, stroke symptoms, and nerve problems",
     duty: "Tuesday, Thursday, Saturday - 11:00 AM to 3:00 PM",
+    slotStart: "11:00",
     keywords: [
       "brain",
       "neuro",
@@ -85,6 +93,8 @@ const doctors = [
       "chakkar",
       "dizziness",
       "sir dard",
+      "head pain",
+      "pain in head",
     ],
   },
   {
@@ -92,6 +102,7 @@ const doctors = [
     specialty: "Oncology",
     careFor: "cancer-related consultation, lump evaluation, biopsy guidance, and chemotherapy advice",
     duty: "Monday, Thursday - 2:00 PM to 5:00 PM",
+    slotStart: "14:00",
     keywords: ["cancer", "oncology", "tumor", "tumour", "lump", "chemotherapy", "biopsy", "gaanth"],
   },
   {
@@ -99,28 +110,55 @@ const doctors = [
     specialty: "Dentistry",
     careFor: "tooth pain, gum problems, dental cleaning, cavity, and oral care",
     duty: "Monday to Saturday - 10:00 AM to 4:00 PM",
-    keywords: ["tooth", "teeth", "dental", "dentist", "gum", "cavity", "mouth", "daant", "dant"],
+    slotStart: "10:00",
+    keywords: ["tooth", "teeth", "tooth pain", "teeth pain", "dental", "dentist", "gum", "cavity", "mouth", "daant", "dant"],
   },
   {
     name: "Dr. Ray",
     specialty: "Dermatology",
     careFor: "skin allergy, rashes, acne, hair fall, itching, and infection",
     duty: "Tuesday, Thursday, Saturday - 10:00 AM to 1:00 PM",
-    keywords: ["skin", "derma", "dermatology", "rash", "rashes", "acne", "hair", "itching", "allergy", "khujli"],
+    slotStart: "10:00",
+    keywords: ["skin", "skin pain", "derma", "dermatology", "rash", "rashes", "acne", "hair", "itching", "allergy", "khujli"],
   },
   {
     name: "Dr. Parbin",
     specialty: "Endocrinology",
     careFor: "diabetes, thyroid, hormone, weight changes, and sugar control",
     duty: "Monday, Wednesday, Friday - 3:00 PM to 6:00 PM",
+    slotStart: "15:00",
     keywords: ["diabetes", "sugar", "thyroid", "hormone", "endocrine", "endocrinology", "weight"],
   },
   {
     name: "Dr. Baruah",
     specialty: "General Surgery",
-    careFor: "appendix, hernia, gallbladder, wounds, piles, and surgery consultation",
+    careFor: "stomach pain, abdominal pain, appendix, hernia, gallbladder, wounds, piles, knee pain, injury, and surgery consultation",
     duty: "Tuesday, Friday - 2:00 PM to 6:00 PM",
-    keywords: ["surgery", "surgeon", "appendix", "hernia", "gallbladder", "wound", "piles", "operation"],
+    slotStart: "14:00",
+    keywords: [
+      "surgery",
+      "surgeon",
+      "appendix",
+      "hernia",
+      "gallbladder",
+      "wound",
+      "piles",
+      "operation",
+      "stomach",
+      "stomach pain",
+      "abdominal",
+      "abdomen",
+      "belly",
+      "belly pain",
+      "pet dard",
+      "knee",
+      "knee pain",
+      "joint pain",
+      "leg pain",
+      "bone pain",
+      "injury",
+      "swelling",
+    ],
   },
 ];
 
@@ -139,6 +177,11 @@ const symptomHelpKeywords = [
   "disease",
   "symptom",
   "symptoms",
+  "pain",
+  "ache",
+  "hurt",
+  "hurting",
+  "dard",
 ];
 
 const emergencyKeywords = [
@@ -155,8 +198,35 @@ const emergencyKeywords = [
   "saans nahi",
 ];
 
+const whyChooseKeywords = [
+  "why should i book",
+  "why book",
+  "why choose",
+  "why your hospital",
+  "why this hospital",
+  "why should i choose",
+  "why should we choose",
+  "benefit",
+  "benefits",
+  "advantage",
+  "advantages",
+  "special about",
+  "good hospital",
+  "best hospital",
+];
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function includesAny(text, keywords) {
-  return keywords.some((keyword) => text.includes(keyword));
+  return keywords.some((keyword) => {
+    if (/^[a-z0-9]+$/i.test(keyword) && keyword.length <= 3) {
+      return new RegExp(`\\b${escapeRegExp(keyword)}\\b`, "i").test(text);
+    }
+
+    return text.includes(keyword);
+  });
 }
 
 function getAllDoctorsText() {
@@ -170,6 +240,17 @@ function getDoctorReply(doctor) {
     text: `For ${doctor.careFor}, you should consult ${doctor.name} (${doctor.specialty}). Duty time: ${doctor.duty}. Would you like to book an appointment? If the patient has emergency symptoms such as severe pain, breathing difficulty, unconsciousness, or heavy bleeding, please call ${hospitalFacts.emergencyPhone} immediately.`,
     actionLabel: "Book appointment",
     actionTarget: "contact",
+    recommendedDoctor: doctor.name,
+    nextTopic: "contact",
+  };
+}
+
+function getDoctorDutyReply(doctor) {
+  return {
+    text: `${doctor.name} (${doctor.specialty}) duty time: ${doctor.duty}. This doctor handles ${doctor.careFor}. Would you like to book an appointment with ${doctor.name}?`,
+    actionLabel: "Book appointment",
+    actionTarget: "contact",
+    recommendedDoctor: doctor.name,
     nextTopic: "contact",
   };
 }
@@ -178,13 +259,77 @@ function findDoctorBySymptoms(normalized) {
   return doctors.find((doctor) => includesAny(normalized, doctor.keywords));
 }
 
+function findDoctorByNameOrSpecialty(normalized) {
+  return doctors.find((doctor) => {
+    const doctorName = doctor.name.toLowerCase();
+    const shortName = doctorName.replace("dr. ", "").replace("dr ", "");
+    const specialty = doctor.specialty.toLowerCase();
+
+    return (
+      normalized.includes(doctorName) ||
+      normalized.includes(shortName) ||
+      normalized.includes(specialty)
+    );
+  });
+}
+
+function wantsDoctorDuty(normalized) {
+  return includesAny(normalized, [
+    "duty",
+    "timing",
+    "timings",
+    "time",
+    "schedule",
+    "available",
+    "availability",
+    "when",
+    "kab",
+  ]);
+}
+
+function isOnlyVaguePain(normalized) {
+  return [
+    "pain",
+    "i have pain",
+    "i am in pain",
+    "body pain",
+    "ache",
+    "dard",
+    "pain hai",
+  ].includes(normalized);
+}
+
 function wantsAllDoctors(normalized) {
   return (
-    includesAny(normalized, ["all doctor", "all doctors", "sabhi doctor", "sare doctor", "list doctor", "doctor list"]) ||
+    includesAny(normalized, [
+      "all doctor",
+      "all doctors",
+      "sabhi doctor",
+      "sare doctor",
+      "list doctor",
+      "doctor list",
+      "list of doctors",
+      "show doctors",
+      "show all doctors",
+      "your doctors",
+      "available doctors",
+    ]) ||
     normalized === "doctors" ||
     normalized === "doctor" ||
     normalized === "who are your doctors"
   );
+}
+
+function wantsDoctorCount(normalized) {
+  return includesAny(normalized, [
+    "how many doctor",
+    "how many doctors",
+    "number of doctor",
+    "number of doctors",
+    "total doctor",
+    "total doctors",
+    "doctor count",
+  ]);
 }
 
 const knowledgeBase = [
@@ -375,10 +520,51 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     };
   }
 
+  if (includesAny(normalized, whyChooseKeywords)) {
+    return {
+      text: `${hospitalFacts.name} is designed to make care easier for patients: 24/7 emergency support, specialist doctors, diagnostic facilities, pharmacy support, appointment booking, clear doctor duty timings, and a local contact number for help. You can also use this AI assistant to choose the right doctor before booking.`,
+      actionLabel: "Book appointment",
+      actionTarget: "contact",
+      nextTopic: "contact",
+    };
+  }
+
+  const namedDoctor = findDoctorByNameOrSpecialty(normalized);
+
+  if (namedDoctor) {
+    if (wantsDoctorDuty(normalized)) {
+      return getDoctorDutyReply(namedDoctor);
+    }
+
+    return {
+      text: `${namedDoctor.name} is our ${namedDoctor.specialty} specialist. This doctor handles ${namedDoctor.careFor}. Duty time: ${namedDoctor.duty}.`,
+      actionLabel: "Book appointment",
+      actionTarget: "contact",
+      recommendedDoctor: namedDoctor.name,
+      nextTopic: "contact",
+    };
+  }
+
   const matchedDoctor = findDoctorBySymptoms(normalized);
 
   if (matchedDoctor) {
     return getDoctorReply(matchedDoctor);
+  }
+
+  if (isOnlyVaguePain(normalized)) {
+    return {
+      text: "Please tell me where the pain is located, such as chest pain, stomach pain, knee pain, head pain, tooth pain, skin pain, or wound/injury pain. After that I can suggest the most suitable doctor and duty time.",
+      nextTopic: "doctors",
+    };
+  }
+
+  if (wantsDoctorCount(normalized)) {
+    return {
+      text: `We currently have ${doctors.length} specialist doctors listed on this website:\n${getAllDoctorsText()}`,
+      actionLabel: "Meet doctors",
+      actionTarget: "doctors",
+      nextTopic: "doctors",
+    };
   }
 
   if (wantsAllDoctors(normalized)) {
@@ -409,7 +595,7 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     .map((item) => ({
       ...item,
       score: item.keywords.reduce(
-        (total, keyword) => total + (normalized.includes(keyword) ? 1 : 0),
+        (total, keyword) => total + (includesAny(normalized, [keyword]) ? 1 : 0),
         0
       ),
     }))
@@ -421,9 +607,9 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     reply = scoredMatch.reply;
   } else {
     reply = {
-      text: "I could not understand the exact question. You can ask about hospital timings, appointment booking, location, emergency contact, fees, facilities, or patient symptoms. If you are not sure which doctor to consult, please describe the patient's problem.",
-      actionLabel: "Book appointment",
-      actionTarget: "contact",
+      text: "I could not identify the exact answer from that message. You can call the hospital at +91 8822141629, or leave your details below so our team can contact you even if you are no longer on the site.",
+      leadForm: true,
+      nextTopic: "doctors",
     };
   }
 

@@ -5,7 +5,8 @@ import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
+import { doctors } from "@/lib/hospital-chat"
 
 export default function AdminPage() {
   const [appointments, setAppointments] = useState([])
@@ -14,17 +15,7 @@ export default function AdminPage() {
   const [selectedDoctor, setSelectedDoctor] = useState("")
   const router = useRouter()
 
- // Purani line hata kar ye likhiye:
-const doctors = [
-  "Dr. Ahmed", 
-  "Dr. Fatima", 
-  "Dr. Robert", 
-  "Dr. Verma", 
-  "Dr. Khan", 
-  "Dr. Ray", 
-  "Dr. Parbin", 
-  "Dr. Baruah"
-];
+  const doctorOptions = doctors.map((doctor) => doctor.name)
 
   // ✅ Fetch Appointments
   const fetchAppointments = useCallback(async () => {
@@ -165,18 +156,29 @@ const doctors = [
                         {editId === item.id ? (
                           <div className="flex gap-2 justify-end items-center animate-in fade-in zoom-in duration-200">
                             <select 
+                                value={selectedDoctor}
                                 onChange={(e) => setSelectedDoctor(e.target.value)} 
                                 className="text-xs border-2 border-slate-100 rounded-xl p-2 bg-slate-50 font-bold outline-none focus:border-blue-400"
                             >
                               <option value="">Assign Doctor</option>
-                              {doctors.map(d => <option key={d} value={d}>{d}</option>)}
+                              {doctorOptions.map(d => <option key={d} value={d}>{d}</option>)}
                             </select>
                             <Button size="sm" onClick={() => handleDoctor(item.id)} className="bg-blue-600 text-[10px] h-8 rounded-lg px-4">Save</Button>
                             <button onClick={() => setEditId(null)} className="text-slate-400 hover:text-slate-900 transition-colors">✕</button>
                           </div>
                         ) : (
                           <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button size="sm" variant="outline" onClick={() => setEditId(item.id)} className="h-8 text-[10px] font-black uppercase rounded-lg">Assign</Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setEditId(item.id)
+                                setSelectedDoctor(item.doctor || "")
+                              }}
+                              className="h-8 text-[10px] font-black uppercase rounded-lg"
+                            >
+                              Edit
+                            </Button>
                             <Button size="sm" variant="outline" onClick={() => handleComplete(item.id)} className="h-8 text-[10px] font-black uppercase rounded-lg text-green-600 border-green-100 hover:bg-green-50">Done</Button>
                             <Button size="sm" variant="ghost" onClick={() => handleDelete(item.id)} className="h-8 text-[10px] font-black uppercase rounded-lg text-red-400 hover:bg-red-50">Delete</Button>
                           </div>
