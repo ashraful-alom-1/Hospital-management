@@ -12,6 +12,7 @@ import { doctors } from "@/lib/hospital-chat";
 
 const CONSULTATION_FEE = 10;
 const UPI_ID = "ashraful.abh-2@oksbi";
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // ✅ Original Animation Variants (Restored)
 const containerVariants = {
@@ -43,6 +44,62 @@ export default function ContactForm() {
     message: ""
   });
 
+  const selectedDoctorDetails = doctors.find((doctor) => doctor.name === form.doctor);
+  const selectedDoctorDays = selectedDoctorDetails?.availableDays || [];
+  const selectedDoctorDayText = selectedDoctorDays.map((day) => DAY_NAMES[day]).join(", ");
+
+  const getNextAvailableDate = (fromDate, availableDays) => {
+    const nextDate = new Date(fromDate);
+
+    for (let offset = 1; offset <= 14; offset += 1) {
+      nextDate.setDate(fromDate.getDate() + offset);
+      if (availableDays.includes(nextDate.getDay())) {
+        return nextDate;
+      }
+    }
+
+    return null;
+  };
+
+  const formatReadableDate = (date) =>
+    date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+  const isDoctorAvailableOnDate = (doctorName, date) => {
+    const doctor = doctors.find((item) => item.name === doctorName);
+    if (!doctor || !date) return true;
+    return doctor.availableDays.includes(date.getDay());
+  };
+
+  const handleDateSelect = (date) => {
+    if (!date) {
+      setForm({ ...form, date: null });
+      return;
+    }
+
+    if (!form.doctor) {
+      alert("Please select a doctor before choosing the appointment date.");
+      return;
+    }
+
+    if (!isDoctorAvailableOnDate(form.doctor, date)) {
+      const nextAvailableDate = getNextAvailableDate(date, selectedDoctorDays);
+      const nextDateText = nextAvailableDate ? formatReadableDate(nextAvailableDate) : "the next available duty day";
+
+      alert(
+        `${form.doctor} is not available on ${formatReadableDate(date)}. This doctor is available on ${selectedDoctorDayText}. Next available date: ${nextDateText}.`
+      );
+      setForm({ ...form, date: nextAvailableDate });
+      return;
+    }
+
+    setForm({ ...form, date });
+  };
+
   useEffect(() => {
     setIsClient(true);
 
@@ -70,6 +127,16 @@ export default function ContactForm() {
     }
     if (!form.date) {
       alert("Please select a date first");
+      return;
+    }
+    if (!isDoctorAvailableOnDate(form.doctor, form.date)) {
+      const nextAvailableDate = getNextAvailableDate(form.date, selectedDoctorDays);
+      const nextDateText = nextAvailableDate ? formatReadableDate(nextAvailableDate) : "the next available duty day";
+
+      alert(
+        `${form.doctor} is not available on ${formatReadableDate(form.date)}. Please select ${nextDateText} or another available duty day.`
+      );
+      setForm({ ...form, date: nextAvailableDate });
       return;
     }
     setShowQR(true);
@@ -232,7 +299,18 @@ export default function ContactForm() {
                 <Input type="tel" placeholder="Phone Number" className="h-14 rounded-2xl bg-slate-50/50 border-slate-100 focus:bg-white" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
                 <select
                   value={form.doctor}
-                  onChange={(e) => setForm({ ...form, doctor: e.target.value })}
+                  onChange={(e) => {
+                    const doctorName = e.target.value;
+                    const doctor = doctors.find((item) => item.name === doctorName);
+
+                    if (form.date && doctor && !doctor.availableDays.includes(form.date.getDay())) {
+                      alert(`${doctorName} is not available on ${formatReadableDate(form.date)}. Please choose a date from ${doctor.availableDays.map((day) => DAY_NAMES[day]).join(", ")}.`);
+                      setForm({ ...form, doctor: doctorName, date: null });
+                      return;
+                    }
+
+                    setForm({ ...form, doctor: doctorName });
+                  }}
                   className="h-14 w-full rounded-2xl border border-slate-100 bg-slate-50/50 px-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-500 focus:bg-white"
                   required
                 >
@@ -243,12 +321,24 @@ export default function ContactForm() {
                     </option>
                   ))}
                 </select>
+                {selectedDoctorDetails ? (
+                  <div className="rounded-2xl bg-blue-50 px-4 py-3 text-xs font-semibold text-blue-800">
+                    {selectedDoctorDetails.name} is available on {selectedDoctorDayText}. Duty time: {selectedDoctorDetails.duty}.
+                  </div>
+                ) : null}
               </motion.div>
 
               <motion.div variants={itemVariants} className="space-y-3 text-center">
                 <label className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Appointment Date</label>
                 <div className="p-2 bg-slate-50 rounded-[2rem] border border-slate-100 flex justify-center overflow-hidden">
-                  {isClient && <Calendar mode="single" selected={form.date} onSelect={(date) => setForm({ ...form, date })} />}
+                  {isClient && (
+                    <Calendar
+                      mode="single"
+                      selected={form.date}
+                      onSelect={handleDateSelect}
+                      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    />
+                  )}
                 </div>
               </motion.div>
 

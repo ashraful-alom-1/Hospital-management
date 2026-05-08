@@ -30,6 +30,7 @@ export const doctors = [
     careFor: "heart, chest pain, BP, ECG, hypertension, and cardiac care",
     duty: "Monday, Wednesday, Friday - 10:00 AM to 2:00 PM",
     slotStart: "10:00",
+    availableDays: [1, 3, 5],
     keywords: [
       "heart",
       "cardio",
@@ -59,6 +60,7 @@ export const doctors = [
     careFor: "child fever, vaccination, cough, growth, and child health",
     duty: "Monday to Saturday - 9:30 AM to 1:30 PM",
     slotStart: "09:30",
+    availableDays: [1, 2, 3, 4, 5, 6],
     keywords: [
       "child",
       "children",
@@ -80,6 +82,7 @@ export const doctors = [
     careFor: "brain, headache, migraine, seizure, stroke symptoms, and nerve problems",
     duty: "Tuesday, Thursday, Saturday - 11:00 AM to 3:00 PM",
     slotStart: "11:00",
+    availableDays: [2, 4, 6],
     keywords: [
       "brain",
       "neuro",
@@ -103,6 +106,7 @@ export const doctors = [
     careFor: "cancer-related consultation, lump evaluation, biopsy guidance, and chemotherapy advice",
     duty: "Monday, Thursday - 2:00 PM to 5:00 PM",
     slotStart: "14:00",
+    availableDays: [1, 4],
     keywords: ["cancer", "oncology", "tumor", "tumour", "lump", "chemotherapy", "biopsy", "gaanth"],
   },
   {
@@ -111,6 +115,7 @@ export const doctors = [
     careFor: "tooth pain, gum problems, dental cleaning, cavity, and oral care",
     duty: "Monday to Saturday - 10:00 AM to 4:00 PM",
     slotStart: "10:00",
+    availableDays: [1, 2, 3, 4, 5, 6],
     keywords: ["tooth", "teeth", "tooth pain", "teeth pain", "dental", "dentist", "gum", "cavity", "mouth", "daant", "dant"],
   },
   {
@@ -119,6 +124,7 @@ export const doctors = [
     careFor: "skin allergy, rashes, acne, hair fall, itching, and infection",
     duty: "Tuesday, Thursday, Saturday - 10:00 AM to 1:00 PM",
     slotStart: "10:00",
+    availableDays: [2, 4, 6],
     keywords: ["skin", "skin pain", "derma", "dermatology", "rash", "rashes", "acne", "hair", "itching", "allergy", "khujli"],
   },
   {
@@ -127,6 +133,7 @@ export const doctors = [
     careFor: "diabetes, thyroid, hormone, weight changes, and sugar control",
     duty: "Monday, Wednesday, Friday - 3:00 PM to 6:00 PM",
     slotStart: "15:00",
+    availableDays: [1, 3, 5],
     keywords: ["diabetes", "sugar", "thyroid", "hormone", "endocrine", "endocrinology", "weight"],
   },
   {
@@ -135,6 +142,7 @@ export const doctors = [
     careFor: "stomach pain, abdominal pain, appendix, hernia, gallbladder, wounds, piles, knee pain, injury, and surgery consultation",
     duty: "Tuesday, Friday - 2:00 PM to 6:00 PM",
     slotStart: "14:00",
+    availableDays: [2, 5],
     keywords: [
       "surgery",
       "surgeon",
