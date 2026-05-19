@@ -72,8 +72,11 @@ export const doctors = [
       "vaccine",
       "bachcha",
       "bacha",
+      "fever",
+      "cold",
       "fever in child",
       "child fever",
+      "asthma",
     ],
   },
   {
@@ -168,6 +171,25 @@ export const doctors = [
       "swelling",
     ],
   },
+  {
+    name: "Dr. Rahman",
+    specialty: "Urologist & Fertility Specialist",
+    careFor: "infertility, pregnancy, period problems, sexual health, and fertility guidance",
+    duty: "Monday to Saturday - 11:00 AM to 3:00 PM",
+    slotStart: "11:00",
+    availableDays: [1, 2, 3, 4, 5, 6],
+    keywords: [
+      "infertility",
+      "child nahi ho raha",
+      "sperm problem",
+      "pregnancy",
+      "period problem",
+      "menstruation",
+      "sexual health",
+      "fertility",
+      "family planning",
+    ],
+  },
 ];
 
 const symptomHelpKeywords = [
@@ -204,6 +226,21 @@ const emergencyKeywords = [
   "stroke",
   "heavy bleeding",
   "saans nahi",
+  "flu",
+  "eye problem",
+  "vision problem",
+  "covid",
+  "corona",
+  "covid-19",
+  "dog bite",
+  "snake bite",
+  "animal bite",
+  "accident",
+  "stone problem",
+  "kidney stone",
+  "vomiting",
+  "ulti",
+  "vomit",
 ];
 
 const whyChooseKeywords = [
