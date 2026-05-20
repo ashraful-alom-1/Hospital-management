@@ -206,10 +206,10 @@ export default function Home() {
     { name: "Dr. Ray", specialty: "Dermatology (Hair & Skin)", img: "blank-profile-picture-973460_960_720.webp" },
     { name: "Dr. Parbin", specialty: "Endocrinology (Diabetes)", img: "lucid-origin_generate_an_image_of_female_doctor_who_is_wearing_hijab_also-0.jpg" },
     { name: "Dr. Baruah", specialty: "General Surgery", img: "blank-profile-picture-973460_960_720.webp" },
-    { name: "Dr. Priya", specialty: "Gastroenterologist", img: "/placeholder-doctor.jpg" },
-    { name: "Dr. Devi", specialty: "Gynecologist", img: "/placeholder-doctor.jpg" },
-    { name: "Dr. Barman", specialty: "Ophthalmologist", img: "/placeholder-doctor.jpg" },
-    { name: "Dr. Choudhury", specialty: "ENT Specialist", img: "/placeholder-doctor.jpg" }
+    { name: "Dr. Priya", specialty: "Gastroenterologist", img: "ChatGPT Image May 20, 2026, 08_32_27 AM.png" },
+    { name: "Dr. Devi", specialty: "Gynecologist", img: "ChatGPT Image May 20, 2026, 08_37_20 AM.png" },
+    { name: "Dr. Barman", specialty: "Ophthalmologist", img: "ChatGPT Image May 20, 2026, 08_39_58 AM.png" },
+    { name: "Dr. Choudhury", specialty: "ENT Specialist", img: "ChatGPT Image May 20, 2026, 08_42_20 AM.png" }
   ];
 
   // 20+ Reviews Data
