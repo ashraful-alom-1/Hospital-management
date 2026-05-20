@@ -192,6 +192,20 @@ export const doctors = [
       "swelling",
     ],
   },
+  // ========== GYNECOLOGIST (MOVED BEFORE UROLOGIST FOR PREGNANCY PRIORITY) ==========
+  {
+    name: "Dr. Devi",
+    specialty: "Gynecologist",
+    careFor: "women's health, pregnancy, periods, fertility",
+    duty: "Monday to Saturday - 9:00 AM to 2:00 PM",
+    slotStart: "09:00",
+    availableDays: [1, 2, 3, 4, 5, 6],
+    keywords: [
+      "gynecology", "women", "female", "pregnancy", "pregnant", "pregnent",
+      "expecting", "expecting baby", "wife pregnant", "period", "menstruation",
+      "pcos", "pcod", "menopause", "pelvic pain"
+    ],
+  },
   {
     name: "Dr. Rahman",
     specialty: "Urologist & Fertility Specialist",
@@ -219,7 +233,7 @@ export const doctors = [
       "family planning",
     ],
   },
-  // ========== NEW DOCTORS ADDED ==========
+  // ========== OTHER NEW DOCTORS ==========
   {
     name: "Dr. Priya",
     specialty: "Gastroenterologist",
@@ -231,19 +245,6 @@ export const doctors = [
       "acidity", "heartburn", "gastric", "gas", "constipation", "kabad",
       "diarrhea", "loose motion", "dast", "stomach pain", "liver problem",
       "jaundice", "gallstone", "ulcer", "ibs"
-    ],
-  },
-  {
-    name: "Dr. Devi",
-    specialty: "Gynecologist",
-    careFor: "women's health, pregnancy, periods, fertility",
-    duty: "Monday to Saturday - 9:00 AM to 2:00 PM",
-    slotStart: "09:00",
-    availableDays: [1, 2, 3, 4, 5, 6],
-    keywords: [
-      "gynecology", "women", "female", "pregnancy", "pregnant", "pregnent",
-      "expecting", "expecting baby", "wife pregnant", "period", "menstruation",
-      "pcos", "pcod", "menopause", "pelvic pain"
     ],
   },
   {
