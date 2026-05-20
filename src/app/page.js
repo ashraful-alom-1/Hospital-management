@@ -205,7 +205,11 @@ export default function Home() {
     { name: "Dr. Khan", specialty: "Dentistry (Teeth)", img: "lucid-origin_generate_an_image_of_male_dentist_doctor-0.jpg" },
     { name: "Dr. Ray", specialty: "Dermatology (Hair & Skin)", img: "blank-profile-picture-973460_960_720.webp" },
     { name: "Dr. Parbin", specialty: "Endocrinology (Diabetes)", img: "lucid-origin_generate_an_image_of_female_doctor_who_is_wearing_hijab_also-0.jpg" },
-    { name: "Dr. Baruah", specialty: "General Surgery", img: "blank-profile-picture-973460_960_720.webp" }
+    { name: "Dr. Baruah", specialty: "General Surgery", img: "blank-profile-picture-973460_960_720.webp" },
+    { name: "Dr. Priya", specialty: "Gastroenterologist", img: "/placeholder-doctor.jpg" },
+    { name: "Dr. Devi", specialty: "Gynecologist", img: "/placeholder-doctor.jpg" },
+    { name: "Dr. Barman", specialty: "Ophthalmologist", img: "/placeholder-doctor.jpg" },
+    { name: "Dr. Choudhury", specialty: "ENT Specialist", img: "/placeholder-doctor.jpg" }
   ];
 
   // 20+ Reviews Data

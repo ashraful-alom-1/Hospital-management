@@ -82,7 +82,7 @@ export const doctors = [
   {
     name: "Dr. Robert",
     specialty: "Neurology",
-    careFor: "brain, headache, migraine, seizure, stroke symptoms, and nerve problems",
+    careFor: "brain, headache, migraine, seizure, stroke symptoms, nerve problems, and mental health/sleep disorders",
     duty: "Tuesday, Thursday, Saturday - 11:00 AM to 3:00 PM",
     slotStart: "11:00",
     availableDays: [2, 4, 6],
@@ -101,6 +101,27 @@ export const doctors = [
       "sir dard",
       "head pain",
       "pain in head",
+      "depression",
+      "anxiety",
+      "stress",
+      "insomnia",
+      "panic attack",
+      "mental health",
+      "tension",
+      "sleep problem",
+      "trouble sleeping",
+      "can't fall asleep",
+      "fall asleep",
+      "asleep",
+      "falling asleep",
+      "sleepy",
+      "sleep issues",
+      "sleep disorder",
+      "not sleeping",
+      "sleep difficulty",
+      "can't sleep",
+      "sleeplessness",
+      "neend nahi aati",
     ],
   },
   {
@@ -183,11 +204,70 @@ export const doctors = [
       "child nahi ho raha",
       "sperm problem",
       "pregnancy",
+      "pregnant",
+      "pregnent",
+      "preganant",
+      "pregent",
+      "expecting",
+      "expecting baby",
+      "baby coming",
+      "wife pregnant",
       "period problem",
       "menstruation",
       "sexual health",
       "fertility",
       "family planning",
+    ],
+  },
+  // ========== NEW DOCTORS ADDED ==========
+  {
+    name: "Dr. Priya",
+    specialty: "Gastroenterologist",
+    careFor: "acidity, gastric, constipation, diarrhea, liver, gallbladder",
+    duty: "Monday to Saturday - 10:00 AM to 4:00 PM",
+    slotStart: "10:00",
+    availableDays: [1, 2, 3, 4, 5, 6],
+    keywords: [
+      "acidity", "heartburn", "gastric", "gas", "constipation", "kabad",
+      "diarrhea", "loose motion", "dast", "stomach pain", "liver problem",
+      "jaundice", "gallstone", "ulcer", "ibs"
+    ],
+  },
+  {
+    name: "Dr. Devi",
+    specialty: "Gynecologist",
+    careFor: "women's health, pregnancy, periods, fertility",
+    duty: "Monday to Saturday - 9:00 AM to 2:00 PM",
+    slotStart: "09:00",
+    availableDays: [1, 2, 3, 4, 5, 6],
+    keywords: [
+      "gynecology", "women", "female", "pregnancy", "pregnant", "pregnent",
+      "expecting", "expecting baby", "wife pregnant", "period", "menstruation",
+      "pcos", "pcod", "menopause", "pelvic pain"
+    ],
+  },
+  {
+    name: "Dr. Barman",
+    specialty: "Ophthalmologist",
+    careFor: "eye problems, vision, cataract",
+    duty: "Monday to Saturday - 10:00 AM to 3:00 PM",
+    slotStart: "10:00",
+    availableDays: [1, 2, 3, 4, 5, 6],
+    keywords: [
+      "eye pain", "eye infection", "vision problem", "blurry vision", "cataract",
+      "motiyabind", "glaucoma", "dry eye", "conjunctivitis", "aankh mein dard"
+    ],
+  },
+  {
+    name: "Dr. Choudhury",
+    specialty: "ENT Specialist",
+    careFor: "ear, nose, throat problems",
+    duty: "Monday to Saturday - 10:00 AM to 4:00 PM",
+    slotStart: "10:00",
+    availableDays: [1, 2, 3, 4, 5, 6],
+    keywords: [
+      "ear pain", "ear infection", "hearing loss", "nose bleed", "sinus", "sinusitis",
+      "sore throat", "tonsils", "cold", "kaan mein dard", "gala kharab"
     ],
   },
 ];
@@ -212,6 +292,10 @@ const symptomHelpKeywords = [
   "hurt",
   "hurting",
   "dard",
+  "which doctor should i consult for",
+  "i need a doctor for",
+  "i am suffering from",
+  "my problem is",
 ];
 
 const emergencyKeywords = [
@@ -241,6 +325,45 @@ const emergencyKeywords = [
   "vomiting",
   "ulti",
   "vomit",
+  "bitten by dog",
+  "bitten by cat",
+  "dog has bitten",
+  "cat has bitten",
+  "bit by a dog",
+  "bitten by snake",
+  "snake has bitten",
+  "bit by a snake",
+  "i am vomiting",
+  "feeling vomiting",
+  "having vomiting",
+  "throwing up",
+  "my child is vomiting",
+  "ulti ho rahi hai",
+  "met with accident",
+  "had an accident",
+  "car accident",
+  "fell down",
+  "i have fever",
+  "my child has fever",
+  "i am feeling feverish",
+  "she has fever",
+  "he has cold",
+  "i have cold",
+  "i think i have covid",
+  "covid symptoms",
+  "corona positive",
+  "depression",
+  "i am depressed",
+  "feeling depressed",
+  "anxiety",
+  "i have anxiety",
+  "feeling anxious",
+  "panic attack",
+  "having panic attack",
+  "kidney pain",
+  "kidney mein dard",
+  "blood in urine",
+  "peshab mein khoon",
 ];
 
 const whyChooseKeywords = [
@@ -269,7 +392,6 @@ function includesAny(text, keywords) {
     if (/^[a-z0-9]+$/i.test(keyword) && keyword.length <= 3) {
       return new RegExp(`\\b${escapeRegExp(keyword)}\\b`, "i").test(text);
     }
-
     return text.includes(keyword);
   });
 }
@@ -309,7 +431,6 @@ function findDoctorByNameOrSpecialty(normalized) {
     const doctorName = doctor.name.toLowerCase();
     const shortName = doctorName.replace("dr. ", "").replace("dr ", "");
     const specialty = doctor.specialty.toLowerCase();
-
     return (
       normalized.includes(doctorName) ||
       normalized.includes(shortName) ||
@@ -379,7 +500,7 @@ function wantsDoctorCount(normalized) {
 
 const knowledgeBase = [
   {
-    keywords: ["hello", "hi", "hey", "namaste", "assalamualaikum"],
+    keywords: ["hello", "hi", "hey", "namaste", "assalamualaikum", "hii", "helo", "helloo", "hlo", "heyy"],
     reply: {
       text: `Hello! I am the ${hospitalFacts.name} AI assistant. You can describe symptoms such as heart or chest pain, child fever, headache, tooth pain, skin problems, diabetes, or a surgery concern. I will suggest the suitable doctor and duty time.`,
     },
@@ -387,7 +508,7 @@ const knowledgeBase = [
   {
     keywords: ["service", "services", "department", "treatment", "facility", "facilities"],
     reply: {
-      text: "We currently highlight Cardiology, Pediatrics, Neurology, Oncology, Dentistry, Dermatology, Endocrinology, General Surgery, Diagnostic Lab, Emergency Ward, X-Ray, Pharmacy, and Dental Care on this website.",
+      text: "We currently highlight Cardiology, Pediatrics, Neurology, Oncology, Dentistry, Dermatology, Endocrinology, General Surgery, Gastroenterology, Gynecology, Ophthalmology, ENT, Diagnostic Lab, Emergency Ward, X-Ray, Pharmacy, and Dental Care on this website.",
       actionLabel: "View services",
       actionTarget: "services",
     },
