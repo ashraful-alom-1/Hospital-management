@@ -1124,10 +1124,10 @@ export default function Home() {
               <h3 className="text-sm font-black uppercase tracking-wider text-blue-400 mb-6">Quick Links</h3>
               <ul className="space-y-3">
                 {[
-                  { name: "About Us", href: "#" },
+                  { name: "About Us", href: "/about" },
                   { name: "Our Doctors", href: "#doctors" },
-                  { name: "Insurance Partners", href: "#" },
-                  { name: "Careers", href: "#" },
+                  { name: "Insurance Partners", href: "/insurance-partners" },
+                  { name: "Careers", href: "/careers" },
                   { name: "Blog", href: "#blog" },
                   { name: "News", href: "#news" }
                 ].map((link, index) => (
@@ -1154,15 +1154,15 @@ export default function Home() {
               <h3 className="text-sm font-black uppercase tracking-wider text-blue-400 mb-6">Medical Services</h3>
               <ul className="space-y-3">
                 {[
-                  { name: "Cardiology", icon: Heart },
-                  { name: "Pediatrics", icon: Baby },
-                  { name: "Surgery", icon: Bone },
-                  { name: "Pharmacy", icon: Pill },
-                  { name: "Diagnostic Lab", icon: Microscope }
+                  { name: "Cardiology", href: "/services/cardiology", icon: Heart },
+                  { name: "Pediatrics", href: "/services/pediatrics", icon: Baby },
+                  { name: "Surgery", href: "/services/surgery", icon: Bone },
+                  { name: "Pharmacy", href: "/services/pharmacy", icon: Pill },
+                  { name: "Diagnostic Lab", href: "/services/diagnostic-lab", icon: Microscope }
                 ].map((service, index) => (
                   <li key={index}>
                     <a 
-                      href="#" 
+                      href={service.href}
                       className="text-slate-300 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2"
                     >
                       <service.icon className="w-3.5 h-3.5 opacity-70" />
@@ -1192,8 +1192,8 @@ export default function Home() {
                 </li>
                 <li className="pt-4 border-t border-slate-800">
                   <div className="flex flex-col gap-2">
-                    <a href="#" className="text-slate-300 hover:text-blue-400 transition-colors text-xs uppercase tracking-wider">Privacy Policy</a>
-                    <a href="#" className="text-slate-300 hover:text-blue-400 transition-colors text-xs uppercase tracking-wider">Terms of Service</a>
+                    <a href="/privacy-policy" className="text-slate-300 hover:text-blue-400 transition-colors text-xs uppercase tracking-wider">Privacy Policy</a>
+                    <a href="/terms-of-service" className="text-slate-300 hover:text-blue-400 transition-colors text-xs uppercase tracking-wider">Terms of Service</a>
                   </div>
                 </li>
               </ul>
