@@ -285,7 +285,7 @@ export default function Home() {
       id: 1,
       title: "10 Tips for a Healthy Heart",
       excerpt: "Learn about lifestyle changes that can significantly reduce your risk of heart disease including diet, exercise, and stress management...",
-      content: "Heart disease remains one of the leading causes of death worldwide, but the good news is that many cases are preventable. Here are 10 comprehensive tips to keep your heart healthy:\n\n1. Eat a balanced diet rich in fruits, vegetables, whole grains, and lean proteins.\n2. Exercise regularly - aim for at least 30 minutes of moderate activity daily.\n3. Maintain a healthy weight to reduce strain on your heart.\n4. Quit smoking and avoid secondhand smoke.\n5. Limit alcohol consumption.\n6. Manage stress through meditation, yoga, or hobbies.\n7. Get regular health screenings for blood pressure and cholesterol.\n8. Control diabetes if you have it.\n9. Get enough sleep - 7-9 hours per night.\n10. Stay hydrated and limit sugary drinks.\n\nRemember, small changes can make a big difference. Start today for a healthier tomorrow!",
+      content: "Heart disease remains one of the leading causes of death worldwide, but the good news is that many cases are preventable. Here are 10 comprehensive tips to keep your heart healthy...",
       author: "Dr. Ahmed",
       date: "March 15, 2026",
       category: "Cardiology",
@@ -297,7 +297,7 @@ export default function Home() {
       id: 2,
       title: "Understanding COVID-19 Vaccines",
       excerpt: "Everything you need to know about the latest COVID-19 vaccines and booster shots for maximum protection...",
-      content: "COVID-19 vaccines have proven to be safe and effective in preventing severe illness. Here's what you need to know:\n\nTypes of Vaccines Available:\n- mRNA vaccines (Pfizer, Moderna)\n- Viral vector vaccines\n- Protein subunit vaccines\n\nBooster Shots: Recommended every 6-12 months for continued protection, especially for high-risk individuals.\n\nCommon Side Effects:\n- Sore arm at injection site\n- Mild fever\n- Fatigue\n- Headache\n\nThese side effects typically resolve within 1-2 days. The benefits of vaccination far outweigh the risks. Consult your doctor if you have specific concerns about allergies or underlying conditions.",
+      content: "COVID-19 vaccines have proven to be safe and effective in preventing severe illness. Here's what you need to know:\n\nTypes of Vaccines Available:\n- mRNA vaccines (Pfizer, Moderna)...",
       author: "Dr. Fatima",
       date: "March 10, 2026",
       category: "Infectious Diseases",
@@ -309,7 +309,7 @@ export default function Home() {
       id: 3,
       title: "Mental Health Awareness in 2026",
       excerpt: "Breaking the stigma: Understanding mental health and when to seek professional help for anxiety and depression...",
-      content: "Mental health is just as important as physical health. In 2026, we're seeing increased awareness but still need to break the stigma.\n\nSigns You May Need Help:\n- Persistent sadness or hopelessness\n- Excessive worry or anxiety\n- Changes in sleep or appetite\n- Withdrawal from social activities\n- Difficulty concentrating\n\nTreatment Options:\n1. Therapy/Counseling (CBT, DBT)\n2. Medication when necessary\n3. Support groups\n4. Lifestyle changes (exercise, nutrition)\n5. Mindfulness and meditation\n\nRemember: Seeking help is a sign of strength, not weakness. Our psychiatric department offers confidential consultations.",
+      content: "Mental health is just as important as physical health. In 2026, we're seeing increased awareness but still need to break the stigma.\n\nSigns You May Need Help:\n- Persistent sadness...",
       author: "Dr. Ray",
       date: "March 5, 2026",
       category: "Psychiatry",
@@ -321,7 +321,7 @@ export default function Home() {
       id: 4,
       title: "Nutrition Guide for Diabetic Patients",
       excerpt: "Essential dietary guidelines and meal planning tips for managing diabetes effectively...",
-      content: "Managing diabetes through proper nutrition is crucial. Here's a comprehensive guide:\n\nFoods to Eat:\n- Non-starchy vegetables\n- Whole grains (brown rice, quinoa, oats)\n- Lean proteins (chicken, fish, tofu)\n- Healthy fats (avocado, nuts, olive oil)\n- Berries and citrus fruits in moderation\n\nFoods to Limit:\n- Refined carbohydrates\n- Sugary beverages\n- Processed snacks\n- Red meat\n- Fried foods\n\nMeal Planning Tips:\n- Eat regular meals at consistent times\n- Control portion sizes\n- Count carbohydrates\n- Stay hydrated with water\n- Monitor blood sugar levels regularly\n\nConsult our nutritionists for personalized meal plans tailored to your needs.",
+      content: "Managing diabetes through proper nutrition is crucial. Here's a comprehensive guide:\n\nFoods to Eat:\n- Non-starchy vegetables\n- Whole grains (brown rice, quinoa, oats)\n- Lean...",
       author: "Dr. Parbin",
       date: "February 28, 2026",
       category: "Endocrinology",
@@ -333,7 +333,7 @@ export default function Home() {
       id: 5,
       title: "Pediatric Care: Vaccination Schedule",
       excerpt: "Complete guide to childhood immunizations and why they're essential for your child's health...",
-      content: "Vaccinations are crucial for protecting children from serious diseases. Here's the recommended schedule:\n\nBirth to 6 Months:\n- Hepatitis B (Birth)\n- DTaP (2,4,6 months)\n- Hib (2,4,6 months)\n- Polio (2,4,6 months)\n- PCV13 (2,4,6 months)\n- Rotavirus (2,4 months)\n\n6-18 Months:\n- Influenza (annual)\n- MMR (12-15 months)\n- Varicella (12-15 months)\n- Hepatitis A (12-23 months)\n\n4-6 Years:\n- DTaP\n- MMR\n- Polio\n- Varicella\n\n11-12 Years:\n- HPV\n- Tdap\n- Meningococcal\n\nVaccines save lives. Follow this schedule to ensure your child's optimal protection.",
+      content: "Vaccinations are crucial for protecting children from serious diseases. Here's the recommended schedule:\n\nBirth to 6 Months:\n- Hepatitis B (Birth)\n- DTaP (2,4,6 months)\n- Hib...",
       author: "Dr. Fatima",
       date: "February 20, 2026",
       category: "Pediatrics",
@@ -345,7 +345,7 @@ export default function Home() {
       id: 6,
       title: "Understanding Hypertension",
       excerpt: "Causes, symptoms, and management of high blood pressure - the silent killer...",
-      content: "Hypertension affects millions worldwide. Understanding it is the first step to management.\n\nNormal blood pressure: Below 120/80 mmHg\nElevated: 120-129/80 mmHg\nHypertension Stage 1: 130-139/80-89 mmHg\nHypertension Stage 2: 140+/90+ mmHg\n\nRisk Factors:\n- Age\n- Family history\n- Obesity\n- Sedentary lifestyle\n- High sodium intake\n- Stress\n- Smoking\n- Excessive alcohol\n\nManagement Strategies:\n1. DASH Diet (rich in fruits, vegetables, low-fat dairy)\n2. Regular exercise (150 minutes/week)\n3. Reduce sodium (less than 2300mg/day)\n4. Limit alcohol\n5. Quit smoking\n6. Stress reduction techniques\n7. Medication as prescribed\n\nRegular monitoring is key. Visit our cardiology department for comprehensive care.",
+      content: "Hypertension affects millions worldwide. Understanding it is the first step to management.\n\nNormal blood pressure: Below 120/80 mmHg\nElevated: 120-129/80 mmHg\nHypertension Stage...",
       author: "Dr. Ahmed",
       date: "February 15, 2026",
       category: "Cardiology",
@@ -361,7 +361,7 @@ export default function Home() {
       id: 1,
       title: "Abhayapuri Care Hospital Launches Advanced Cardiac Care Unit",
       summary: "State-of-the-art facility with modern equipment to serve heart patients in Bongaigaon region...",
-      content: "We are proud to announce the launch of our new Advanced Cardiac Care Unit (ACCU). This 50-bed facility is equipped with:\n\n- Latest ECG machines\n- 24/7 cardiac monitoring\n- Dedicated cath lab\n- Experienced cardiologists on call\n- Emergency response team\n\nThe unit will provide comprehensive cardiac care including emergency interventions, diagnostic services, and rehabilitation. This represents a significant investment in healthcare infrastructure for the Bongaigaon region.\n\nInauguration Ceremony: March 20, 2026, at 11 AM.\n\nAll are welcome to attend.",
+      content: "We are proud to announce the launch of our new Advanced Cardiac Care Unit (ACCU). This 50-bed facility is equipped with:\n\n- Latest ECG machines\n- 24/7 cardiac monitoring\n- Dedicated...",
       date: "March 12, 2026",
       category: "Hospital News",
       image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800",
@@ -371,7 +371,7 @@ export default function Home() {
       id: 2,
       title: "Free Health Camp Organized in Rural Areas",
       summary: "Our medical team visits remote villages to provide free checkups and medicines...",
-      content: "As part of our community outreach program, we organized a free health camp in the remote village of Chapaguri. Our team of 15 doctors and 20 paramedics provided:\n\n- Free consultations (over 500 patients)\n- Free medicines worth ₹2 lakhs\n- Health awareness sessions\n- Blood pressure and diabetes screening\n- COVID-19 vaccination drive\n\nThe camp was a huge success with overwhelming response from the local community. We plan to organize similar camps in other villages every month.\n\nNext Camp: April 5, 2026 at Borobazar village.",
+      content: "As part of our community outreach program, we organized a free health camp in the remote village of Chapaguri. Our team of 15 doctors and 20 paramedics provided:\n\n- Free consultations...",
       date: "March 8, 2026",
       category: "Community Outreach",
       image: "/emergency-ward-setup-service.jpg",
@@ -381,7 +381,7 @@ export default function Home() {
       id: 3,
       title: "Recognition for Excellence in Patient Care",
       summary: "Abhayapuri Care Hospital receives award for outstanding patient safety standards...",
-      content: "We are honored to announce that Abhayapuri Care Hospital has received the 'Excellence in Patient Safety' award from the Assam Health Department.\n\nThe award recognizes our commitment to:\n- Zero medical errors\n- Infection control protocols\n- Patient satisfaction scores (98%)\n- Staff training programs\n- Emergency response times\n\nThis recognition motivates us to continue improving our services. We thank our dedicated staff and supportive patients for making this possible.",
+      content: "We are honored to announce that Abhayapuri Care Hospital has received the 'Excellence in Patient Safety' award from the Assam Health Department.\n\nThe award recognizes our commitment...",
       date: "March 1, 2026",
       category: "Achievements",
       image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?q=80&w=800",
@@ -391,7 +391,7 @@ export default function Home() {
       id: 4,
       title: "New MRI Machine Installation Completed",
       summary: "3-Tesla wide-bore MRI machine now operational for advanced diagnostic imaging...",
-      content: "We have successfully installed a new 3-Tesla wide-bore MRI machine - the first in the region. This advanced technology offers:\n\n- Higher resolution images\n- Faster scan times (reduced by 40%)\n- More comfortable experience for claustrophobic patients\n- Advanced cardiac and neurological imaging\n- Lower radiation exposure\n\nThe machine is now operational and available for all patients. Special introductory rates apply for the first month.\n\nFor appointments, contact our radiology department.",
+      content: "We have successfully installed a new 3-Tesla wide-bore MRI machine - the first in the region. This advanced technology offers:\n\n- Higher resolution images\n- Faster scan times...",
       date: "February 25, 2026",
       category: "Facility Update",
       image: "https://cdn.expresshealthcare.in/wp-content/uploads/2025/09/09154759/New-Project-2025-09-09T150934.100.jpg",
@@ -401,7 +401,7 @@ export default function Home() {
       id: 5,
       title: "Telemedicine Services Expanded",
       summary: "Now offering virtual consultations with specialists from across India...",
-      content: "We have expanded our telemedicine services to reach more patients. Now you can consult with our specialists from the comfort of your home.\n\nAvailable Services:\n- Video consultations\n- E-prescriptions\n- Home delivery of medicines\n- Remote patient monitoring\n- Follow-up appointments\n\nSpecialties Available:\n- Cardiology\n- Neurology\n- Pediatrics\n- Dermatology\n- Psychiatry\n\nTo book a telemedicine appointment, call our helpline or use our mobile app.",
+      content: "We have expanded our telemedicine services to reach more patients. Now you can consult with our specialists from the comfort of your home.\n\nAvailable Services:\n- Video consultation...",
       date: "February 20, 2026",
       category: "Technology",
       image: "https://static.toiimg.com/thumb/msid-121195349,imgsize-19952,width-400,height-225,resizemode-72/121195349.jpg",
@@ -411,7 +411,7 @@ export default function Home() {
       id: 6,
       title: "International Doctors' Conference Hosted",
       summary: "Leading medical experts from 15 countries gather for healthcare innovation summit...",
-      content: "Abhayapuri Care Hospital successfully hosted the International Healthcare Innovation Summit 2026. The event brought together:\n\n- 200+ doctors from 15 countries\n- 50 research presentations\n- Workshops on latest surgical techniques\n- Panel discussions on future of healthcare\n- Networking opportunities\n\nKey topics discussed:\n- AI in diagnostics\n- Robotic surgery advancements\n- Personalized medicine\n- Global health challenges\n\nThis positions our hospital as a center for medical excellence in Northeast India.",
+      content: "Abhayapuri Care Hospital successfully hosted the International Healthcare Innovation Summit 2026. The event brought together:\n\n- 200+ doctors from 15 countries\n- 50 research projects...",
       date: "February 15, 2026",
       category: "Events",
       image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800",
@@ -569,7 +569,7 @@ export default function Home() {
         {/* Book Button */}
         <Button 
           onClick={() => scrollTo('contact', 80)} 
-          className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 rounded-full font-bold px-3 sm:px-4 md:px-5 h-8 sm:h-9 md:h-10 text-[11px] sm:text-xs md:text-sm transition-all active:scale-95 shadow-lg shadow-blue-600/20"
+          className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 rounded-full font-bold px-3 sm:px-4 md:px-5 h-8 sm:h-9 md:h-10 text-[11px] sm:text-xs md:text-sm transition-all active:scale-95"
         >
           Book Now
         </Button>
@@ -627,7 +627,7 @@ export default function Home() {
       >
         <motion.div initial="hidden" animate="visible" className="text-center max-w-5xl w-full z-10">
           <motion.div variants={fadeInUp} className="mb-6">
-            <span className="inline-block max-w-full bg-white text-blue-700 px-4 py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wide sm:tracking-widest border border-white/20">
+            <span className="inline-block max-w-full bg-white text-blue-700 px-4 py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wide sm:tracking-widest border border-slate-200">
               BONGAIGAON&apos;S PREMIER HEALTHCARE
             </span>
           </motion.div>
@@ -713,7 +713,7 @@ export default function Home() {
                 <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Happy Patients</div>
               </div>
               <div>
-                <div className="text-3xl font-black text-blue-600 mb-2">50+</div>
+                <div className="text-3xl font-black text-blue-600 mb-2">10+</div>
                 <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Expert Doctors</div>
               </div>
               <div>
@@ -1086,7 +1086,7 @@ export default function Home() {
           <div className="text-center max-w-2xl">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 leading-tight uppercase underline decoration-blue-500 decoration-4 sm:decoration-8 underline-offset-8">Expert Specialists</h2>
             <p className="text-slate-300 text-lg mb-10">Our team consists of internationally trained specialists across all major medical sectors.</p>
-            <Button variant="outline" className="border-white text-white bg-blue-600 hover:bg-white hover:text-slate-900 font-bold h-14 px-10 rounded-xl" onClick={() => scrollTo('contact', 80)}>Meet Our Doctors</Button>
+            <Button variant="outline" className="border-white text-white bg-blue-600 hover:bg-white hover:text-slate-900 font-bold h-14 px-10 rounded-xl" onClick={() => scrollTo('contact', 80)}>Book Consultation</Button>
           </div>
 
           <Swiper
@@ -1127,7 +1127,7 @@ export default function Home() {
       <section id="location" className="py-20 sm:py-32 px-4 sm:px-6 bg-white relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-8 uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">Find Us</h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-8 uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">Find Us Here</h2>
                 <div className="space-y-6 text-slate-600">
                     <div>
                         <p className="font-black text-blue-600 uppercase text-xs tracking-widest">📍 Main Location</p>
@@ -1141,7 +1141,7 @@ export default function Home() {
             </div>
             <div className="md:w-1/2 w-full h-[400px] rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14299.16726189578!2d90.6558298!3d26.3312852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3758e579294f385f%3A0x67399882260655d8!2sAbhayapuri%2C%20Assam!5e0!3m2!1sen!2sin!4v1713333333333" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14299.16726189578!2d90.6558298!3d26.3312852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3758e579294f385f%3A0x6e16e73b0e46a6f5!2sAbhayapuri%20Care%20Hospital!5e0!3m2!1sen!2sin!4v1739289478571"
                     width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy">
                 </iframe>
             </div>
@@ -1151,7 +1151,7 @@ export default function Home() {
       {/* --- CONTACT SECTION --- */}
       <section id="contact" className="py-20 sm:py-32 px-4 sm:px-6 bg-slate-50 z-10 relative">
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">Book Your Visit</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 uppercase underline decoration-blue-600 decoration-4 sm:decoration-8 underline-offset-8">Book Your Visit Today</h2>
         </div>
         <ContactForm />
       </section>
