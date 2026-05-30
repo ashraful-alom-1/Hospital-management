@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import ContactForm from "@/components/ui/ContactForm";
 import HospitalChatWidget from "@/components/ui/HospitalChatWidget";
 import { Button } from "@/components/ui/button";
+import { defaultDoctors } from "@/lib/careers";
+import { supabase } from "@/lib/supabase";
 import { 
   FlaskConical, 
   Ambulance, 
@@ -197,20 +199,59 @@ export default function Home() {
     { title: "Diagnostic Lab", category: "Facility", img: "https://mkbetul.com/wp-content/uploads/2025/12/freepik__35mm-film-photography-modern-pathology-laboratory-__88338-1024x585.png" },
   ];
 
-  const doctorsList = [
-    { name: "Dr. Ahmed", specialty: "Cardiology (Heart)", img: "lucid-origin_generate_an_image_of_male_doctor-0.jpg" },
-    { name: "Dr. Fatima", specialty: "Pediatrics (Child)", img: "https://img.freepik.com/premium-photo/close-up-muslim-female-doctor-protective-mask-looking-front-working-hospital_249974-5147.jpg" },
-    { name: "Dr. Robert", specialty: "Neurology (Brain)", img: "lucid-origin_generate_an_image_of_nurologist_specialist_doctor-0.jpg" },
-    { name: "Dr. Verma", specialty: "Oncology (Cancer)", img: "lucid-origin_generate_an_image_of_cancer_specialist_doctor-0.jpg" },
-    { name: "Dr. Khan", specialty: "Dentistry (Teeth)", img: "lucid-origin_generate_an_image_of_male_dentist_doctor-0.jpg" },
-    { name: "Dr. Ray", specialty: "Dermatology (Hair & Skin)", img: "blank-profile-picture-973460_960_720.webp" },
-    { name: "Dr. Parbin", specialty: "Endocrinology (Diabetes)", img: "lucid-origin_generate_an_image_of_female_doctor_who_is_wearing_hijab_also-0.jpg" },
-    { name: "Dr. Baruah", specialty: "General Surgery", img: "blank-profile-picture-973460_960_720.webp" },
-    { name: "Dr. Priya", specialty: "Gastroenterologist", img: "ChatGPT Image May 20, 2026, 08_32_27 AM.png" },
-    { name: "Dr. Devi", specialty: "Gynecologist", img: "ChatGPT Image May 20, 2026, 08_37_20 AM.png" },
-    { name: "Dr. Barman", specialty: "Ophthalmologist", img: "ChatGPT Image May 20, 2026, 08_39_58 AM.png" },
-    { name: "Dr. Choudhury", specialty: "ENT Specialist", img: "ChatGPT Image May 20, 2026, 08_42_20 AM.png" }
-  ];
+  const doctorsList = defaultDoctors.map((doctor) => ({
+    name: doctor.name,
+    specialty: doctor.specialization,
+    img: doctor.photo_url,
+  }));
+  const [displayedGalleryItems, setDisplayedGalleryItems] = useState(galleryItems);
+  const [displayedDoctorsList, setDisplayedDoctorsList] = useState(doctorsList);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadHomepageManagedContent() {
+      const [galleryResult, doctorsResult] = await Promise.all([
+        supabase
+          .from("gallery_photos")
+          .select("id,title,category,image_url,created_at")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("doctors")
+          .select("id,name,department,specialization,photo_url,status,created_at")
+          .eq("status", "active")
+          .order("created_at", { ascending: false }),
+      ]);
+
+      if (!isMounted) return;
+
+      if (!galleryResult.error && galleryResult.data?.length) {
+        setDisplayedGalleryItems(
+          galleryResult.data.map((item) => ({
+            title: item.title || "Hospital Gallery",
+            category: item.category || "Hospital",
+            img: item.image_url,
+          }))
+        );
+      }
+
+      if (!doctorsResult.error && doctorsResult.data?.length) {
+        setDisplayedDoctorsList(
+          doctorsResult.data.map((doctor) => ({
+            name: doctor.name,
+            specialty: doctor.specialization || doctor.department || "Specialist",
+            img: doctor.photo_url || "blank-profile-picture-973460_960_720.webp",
+          }))
+        );
+      }
+    }
+
+    loadHomepageManagedContent();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // 20+ Reviews Data
   const allReviews = [
@@ -333,7 +374,7 @@ export default function Home() {
       content: "As part of our community outreach program, we organized a free health camp in the remote village of Chapaguri. Our team of 15 doctors and 20 paramedics provided:\n\n- Free consultations (over 500 patients)\n- Free medicines worth ₹2 lakhs\n- Health awareness sessions\n- Blood pressure and diabetes screening\n- COVID-19 vaccination drive\n\nThe camp was a huge success with overwhelming response from the local community. We plan to organize similar camps in other villages every month.\n\nNext Camp: April 5, 2026 at Borobazar village.",
       date: "March 8, 2026",
       category: "Community Outreach",
-      image: "https://img-cdn.publive.online/fit-in/640x480/filters:format(webp)/greater-kashmir/media/media_files/wp-content/uploads/2023/10/Medical_camp.jpg",
+      image: "/emergency-ward-setup-service.jpg",
       link: "#"
     },
     {
@@ -1011,7 +1052,7 @@ export default function Home() {
             modules={[EffectCoverflow, Autoplay]}
             className="w-full pb-10"
           >
-            {galleryItems.map((item, index) => (
+            {displayedGalleryItems.map((item, index) => (
               <SwiperSlide
                 key={index}
                 style={{ width: '280px', height: '380px' }}
@@ -1065,7 +1106,7 @@ export default function Home() {
             modules={[EffectCoverflow, Autoplay]}
             className="w-full pb-10"
           >
-            {doctorsList.map((doc, idx) => (
+            {displayedDoctorsList.map((doc, idx) => (
               <SwiperSlide key={idx} style={{ width: '280px', height: '380px' }}>
                 <div className="relative h-full rounded-3xl overflow-hidden border border-white/10 group shadow-2xl">
                   <img src={doc.img} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt={doc.name} />

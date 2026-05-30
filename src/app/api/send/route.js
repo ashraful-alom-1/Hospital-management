@@ -5,13 +5,37 @@ import { doctors } from "@/lib/hospital-chat";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
 const HOSPITAL_CONTACT = "+91 8822141629";
 const SLOT_MINUTES = 20;
 
-function getDoctorSlotStart(doctorName) {
+async function getDoctorSlotStart(doctorName) {
+  const { data: liveDoctor } = await supabase
+    .from("doctors")
+    .select("id,name")
+    .eq("name", doctorName)
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (liveDoctor?.id) {
+    const { data: roster } = await supabase
+      .from("duty_rosters")
+      .select("shift_start")
+      .eq("person_type", "doctor")
+      .eq("doctor_id", liveDoctor.id)
+      .maybeSingle();
+
+    if (roster?.shift_start) {
+      const [hours = "10", minutes = "00"] = String(roster.shift_start).split(":");
+      return {
+        hours: Number(hours),
+        minutes: Number(minutes),
+      };
+    }
+  }
+
   const selectedDoctor = doctors.find((item) => item.name === doctorName);
   const [hours = "10", minutes = "00"] = (selectedDoctor?.slotStart || "10:00").split(":");
 
@@ -44,7 +68,7 @@ export async function POST(req) {
 
     const { data: records } = await appointmentQuery;
     const patientIndex = records ? records.length : 0;
-    const slotStart = getDoctorSlotStart(doctor);
+    const slotStart = await getDoctorSlotStart(doctor);
     const startTime = new Date();
     startTime.setHours(slotStart.hours, slotStart.minutes, 0, 0);
     startTime.setMinutes(startTime.getMinutes() + patientIndex * SLOT_MINUTES);

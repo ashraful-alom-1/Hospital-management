@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, CheckCircle2, FileText, Phone } from "lucide-react";
+import CareerApplication from "@/components/CareerApplication";
 
 function Hero({ page }) {
   return (
@@ -240,9 +241,10 @@ export default function FooterInfoPage({ page }) {
       {page.template === "story" && <StoryLayout page={page} />}
       {page.template === "insurance" && <InsuranceLayout page={page} />}
       {page.template === "careers" && <CareersLayout page={page} />}
+      {page.template === "careers" && <CareerApplication page={page} />}
       {page.template === "legal" && <LegalLayout page={page} />}
       {page.template === "service" && <ServiceLayout page={page} />}
-      <CTA page={page} />
+      {page.template !== "careers" && <CTA page={page} />}
     </main>
   );
 }

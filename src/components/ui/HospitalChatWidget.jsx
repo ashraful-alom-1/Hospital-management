@@ -10,6 +10,8 @@ export default function HospitalChatWidget() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [leadForms, setLeadForms] = useState({});
+  const [careerForms, setCareerForms] = useState({});
+  const [statusForms, setStatusForms] = useState({});
   const nextMessageId = useRef(2);
   const lastTopicRef = useRef("contact");
   const [messages, setMessages] = useState([
@@ -23,12 +25,16 @@ export default function HospitalChatWidget() {
 
   const scrollToSection = (targetId, recommendedDoctor = "") => {
     if (recommendedDoctor) {
-      localStorage.setItem("recommendedDoctor", recommendedDoctor);
       window.dispatchEvent(
         new CustomEvent("doctor-recommended", {
           detail: { doctor: recommendedDoctor },
         })
       );
+    }
+
+    if (targetId === "careers") {
+      window.location.href = "/careers#career-application";
+      return;
     }
 
     const section = document.getElementById(targetId);
@@ -94,6 +100,9 @@ export default function HospitalChatWidget() {
           actionTarget: assistantReply.actionTarget,
           recommendedDoctor: assistantReply.recommendedDoctor,
           leadForm: assistantReply.leadForm,
+          careerForm: assistantReply.careerForm,
+          applicationStatusForm: assistantReply.applicationStatusForm,
+          vacancies: assistantReply.vacancies || [],
           sourceQuestion: trimmed,
         },
       ]);
@@ -110,6 +119,163 @@ export default function HospitalChatWidget() {
       ]);
     } finally {
       setIsTyping(false);
+    }
+  };
+
+  const updateCareerForm = (messageId, field, value) => {
+    setCareerForms((current) => ({
+      ...current,
+      [messageId]: {
+        name: "",
+        email: "",
+        phone: "",
+        qualification: "",
+        experience: "",
+        currentCity: "",
+        expectedSalary: "",
+        selectedPost: "",
+        vacancyTitle: "",
+        department: "",
+        requirements: "",
+        coverNote: "",
+        resume: null,
+        status: "idle",
+        ...(current[messageId] || {}),
+        [field]: value,
+      },
+    }));
+  };
+
+  const submitCareerForm = async (message) => {
+    const form = careerForms[message.id] || {};
+    const requiredFields = ["name", "email", "phone", "qualification", "experience", "currentCity"];
+    if (message.vacancies?.length) requiredFields.push("selectedPost");
+    const missing = requiredFields.some((field) => !String(form[field] || "").trim());
+
+    if (missing || !form.resume) {
+      setCareerForms((current) => ({
+        ...current,
+        [message.id]: {
+          ...(current[message.id] || {}),
+          status: "error",
+          error: "Please complete all required details and upload a resume.",
+        },
+      }));
+      return;
+    }
+
+    if (form.resume.size > 5 * 1024 * 1024) {
+      setCareerForms((current) => ({
+        ...current,
+        [message.id]: {
+          ...(current[message.id] || {}),
+          status: "error",
+          error: "Resume must be 5 MB or smaller.",
+        },
+      }));
+      return;
+    }
+
+    setCareerForms((current) => ({
+      ...current,
+      [message.id]: { ...(current[message.id] || {}), status: "sending", error: "" },
+    }));
+
+    try {
+      const payload = new FormData();
+      payload.append("name", form.name.trim());
+      payload.append("email", form.email.trim());
+      payload.append("phone", form.phone.trim());
+      payload.append("qualification", form.qualification.trim());
+      payload.append("experience", form.experience.trim());
+      payload.append("currentCity", form.currentCity.trim());
+      payload.append("expectedSalary", form.expectedSalary || "");
+      payload.append("selectedPost", form.selectedPost || "chat-career-inquiry");
+      payload.append("vacancyTitle", form.vacancyTitle || "Career Inquiry from AI Chat");
+      payload.append("department", form.department || "Career");
+      payload.append("requirements", form.requirements || "");
+      payload.append("coverNote", form.coverNote || message.sourceQuestion || "Candidate applied from AI chat.");
+      payload.append("resume", form.resume);
+
+      const response = await fetch("/api/career-application", {
+        method: "POST",
+        body: payload,
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Career application could not be submitted.");
+      }
+
+      setCareerForms((current) => ({
+        ...current,
+        [message.id]: { ...current[message.id], status: "sent", error: "" },
+      }));
+    } catch (error) {
+      setCareerForms((current) => ({
+        ...current,
+        [message.id]: {
+          ...(current[message.id] || {}),
+          status: "error",
+          error: error.message || "Could not send application. Please call +91 8822141629.",
+        },
+      }));
+    }
+  };
+
+  const selectCareerVacancy = (message, vacancyId) => {
+    const vacancy = (message.vacancies || []).find((item) => String(item.id) === String(vacancyId));
+    updateCareerForm(message.id, "selectedPost", vacancyId);
+    setCareerForms((current) => ({
+      ...current,
+      [message.id]: {
+        ...(current[message.id] || {}),
+        selectedPost: vacancyId,
+        vacancyTitle: vacancy?.title || "",
+        department: vacancy?.department || "",
+        requirements: vacancy?.requirements || "",
+      },
+    }));
+  };
+
+  const checkApplicationStatus = async (message) => {
+    const contact = statusForms[message.id]?.contact?.trim() || "";
+
+    if (!contact) {
+      setStatusForms((current) => ({
+        ...current,
+        [message.id]: { contact, status: "error", error: "Enter the phone number or email used while applying." },
+      }));
+      return;
+    }
+
+    setStatusForms((current) => ({
+      ...current,
+      [message.id]: { contact, status: "checking", error: "" },
+    }));
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "application status",
+          contact,
+          lastTopic: "careers",
+        }),
+      });
+      const reply = await response.json();
+      if (!response.ok) throw new Error(reply.text || "Could not check status.");
+
+      setStatusForms((current) => ({
+        ...current,
+        [message.id]: { contact, status: "done", error: "", result: reply.text },
+      }));
+    } catch (error) {
+      setStatusForms((current) => ({
+        ...current,
+        [message.id]: { contact, status: "error", error: error.message },
+      }));
     }
   };
 
@@ -321,6 +487,136 @@ export default function HospitalChatWidget() {
                             {leadForms[message.id]?.status === "sending" ? "Sending..." : "Submit Details"}
                           </button>
                         )}
+                      </div>
+                    ) : null}
+                    {message.role === "assistant" && message.careerForm ? (
+                      <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-3">
+                        <p className="text-sm font-black text-slate-900">
+                          Candidate details for career application
+                        </p>
+                        <div className="mt-3 space-y-2">
+                          {message.vacancies?.length ? (
+                            <label className="block">
+                              <span className="mb-1 block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                                Preferred Position
+                              </span>
+                              <select
+                                value={careerForms[message.id]?.selectedPost || ""}
+                                onChange={(event) => selectCareerVacancy(message, event.target.value)}
+                                disabled={careerForms[message.id]?.status === "sent"}
+                                className="h-10 w-full rounded-xl border border-emerald-100 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-emerald-500 disabled:bg-slate-100"
+                              >
+                                <option value="">Select vacancy</option>
+                                {message.vacancies.map((job) => (
+                                  <option key={job.id} value={job.id}>
+                                    {job.title} - {job.department}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                          ) : null}
+                          {[
+                            ["name", "Name", "Candidate full name"],
+                            ["phone", "Phone", "Candidate phone number"],
+                            ["email", "Email", "Candidate email"],
+                            ["qualification", "Degree / Qualification", "MBBS, GNM, B.Sc Nursing, Diploma, B.Pharm..."],
+                            ["experience", "Experience", "Example: Fresher, 1 year, 3 years"],
+                            ["currentCity", "Current City", "Candidate current city"],
+                            ["expectedSalary", "Expected Salary", "Optional"],
+                            ["coverNote", "Message to HR", "Why should HR consider this candidate?"],
+                          ].map(([field, label, placeholder]) => (
+                            <label key={field} className="block">
+                              <span className="mb-1 block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                                {label}
+                              </span>
+                              <input
+                                type={field === "email" ? "email" : "text"}
+                                value={careerForms[message.id]?.[field] || ""}
+                                onChange={(event) => updateCareerForm(message.id, field, event.target.value)}
+                                placeholder={placeholder}
+                                disabled={careerForms[message.id]?.status === "sent"}
+                                className="h-10 w-full rounded-xl border border-emerald-100 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-emerald-500 disabled:bg-slate-100"
+                              />
+                            </label>
+                          ))}
+                          <label className="block rounded-xl border border-dashed border-emerald-200 bg-white p-3 text-center">
+                            <span className="block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                              Resume Upload
+                            </span>
+                            <span className="mt-1 block text-xs font-bold text-slate-700">
+                              {careerForms[message.id]?.resume?.name || "PDF, DOC, or DOCX up to 5 MB"}
+                            </span>
+                            <input
+                              type="file"
+                              accept=".pdf,.doc,.docx"
+                              disabled={careerForms[message.id]?.status === "sent"}
+                              className="mt-2 w-full text-[11px] font-semibold"
+                              onChange={(event) => updateCareerForm(message.id, "resume", event.target.files?.[0] || null)}
+                            />
+                          </label>
+                        </div>
+                        {careerForms[message.id]?.selectedPost && careerForms[message.id]?.qualification ? (
+                          <div className="mt-3 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700">
+                            <p className="font-black text-slate-950">Application Summary</p>
+                            <p>Post: {careerForms[message.id]?.vacancyTitle || "Career Inquiry"}</p>
+                            <p>Qualification: {careerForms[message.id]?.qualification}</p>
+                            <p>
+                              {String(careerForms[message.id]?.requirements || "").toLowerCase().includes(String(careerForms[message.id]?.qualification || "").toLowerCase().split(/[,\s./()-]+/)[0])
+                                ? "You appear eligible for this position."
+                                : "You may still apply, but final eligibility will be reviewed by HR."}
+                            </p>
+                          </div>
+                        ) : null}
+                        {careerForms[message.id]?.error ? (
+                          <p className="mt-2 text-xs font-bold text-red-600">{careerForms[message.id].error}</p>
+                        ) : null}
+                        {careerForms[message.id]?.status === "sent" ? (
+                          <p className="mt-3 rounded-xl bg-green-100 px-3 py-2 text-xs font-bold text-green-700">
+                            Application submitted. A notification email has been sent if email credentials are configured.
+                          </p>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => submitCareerForm(message)}
+                            disabled={careerForms[message.id]?.status === "sending"}
+                            className="mt-3 w-full rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-black text-white transition hover:bg-emerald-800 disabled:bg-slate-300"
+                          >
+                            {careerForms[message.id]?.status === "sending" ? "Submitting..." : "Submit Career Application"}
+                          </button>
+                        )}
+                      </div>
+                    ) : null}
+                    {message.role === "assistant" && message.applicationStatusForm ? (
+                      <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/70 p-3">
+                        <p className="text-sm font-black text-slate-900">Check application status</p>
+                        <input
+                          type="text"
+                          value={statusForms[message.id]?.contact || ""}
+                          onChange={(event) =>
+                            setStatusForms((current) => ({
+                              ...current,
+                              [message.id]: { ...(current[message.id] || {}), contact: event.target.value },
+                            }))
+                          }
+                          placeholder="Phone or email used while applying"
+                          className="mt-3 h-10 w-full rounded-xl border border-blue-100 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-blue-500"
+                        />
+                        {statusForms[message.id]?.error ? (
+                          <p className="mt-2 text-xs font-bold text-red-600">{statusForms[message.id].error}</p>
+                        ) : null}
+                        {statusForms[message.id]?.result ? (
+                          <p className="mt-3 whitespace-pre-line rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-700">
+                            {statusForms[message.id].result}
+                          </p>
+                        ) : null}
+                        <button
+                          type="button"
+                          onClick={() => checkApplicationStatus(message)}
+                          disabled={statusForms[message.id]?.status === "checking"}
+                          className="mt-3 w-full rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-black text-white transition hover:bg-blue-700 disabled:bg-slate-300"
+                        >
+                          {statusForms[message.id]?.status === "checking" ? "Checking..." : "Check Status"}
+                        </button>
                       </div>
                     ) : null}
                   </div>

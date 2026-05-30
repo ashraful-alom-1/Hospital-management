@@ -8,11 +8,20 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
-import { doctors } from "@/lib/hospital-chat";
+import { doctors as fallbackDoctors } from "@/lib/hospital-chat";
+import { normalizeDutyDays, formatShift } from "@/lib/availability";
 
-const CONSULTATION_FEE = 10;
 const UPI_ID = "ashraful.abh-2@oksbi";
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAY_TO_INDEX = {
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+  saturday: 6,
+};
 
 // ✅ Original Animation Variants (Restored)
 const containerVariants = {
@@ -34,6 +43,13 @@ export default function ContactForm() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null);
   const [showQR, setShowQR] = useState(false); 
+  const [bookingDoctors, setBookingDoctors] = useState(() =>
+    fallbackDoctors.map((doctor) => ({
+      ...doctor,
+      consultation_fee: null,
+      rosterMissing: false,
+    }))
+  );
 
   const [form, setForm] = useState({
     name: "",
@@ -44,9 +60,12 @@ export default function ContactForm() {
     message: ""
   });
 
-  const selectedDoctorDetails = doctors.find((doctor) => doctor.name === form.doctor);
+  const selectedDoctorDetails = bookingDoctors.find((doctor) => doctor.name === form.doctor);
   const selectedDoctorDays = selectedDoctorDetails?.availableDays || [];
-  const selectedDoctorDayText = selectedDoctorDays.map((day) => DAY_NAMES[day]).join(", ");
+  const selectedDoctorDayText = selectedDoctorDays.length
+    ? selectedDoctorDays.map((day) => DAY_NAMES[day]).join(", ")
+    : "Roster not set";
+  const selectedDoctorFee = Number(selectedDoctorDetails?.consultation_fee) || null;
 
   const getNextAvailableDate = (fromDate, availableDays) => {
     const nextDate = new Date(fromDate);
@@ -70,8 +89,9 @@ export default function ContactForm() {
     });
 
   const isDoctorAvailableOnDate = (doctorName, date) => {
-    const doctor = doctors.find((item) => item.name === doctorName);
+    const doctor = bookingDoctors.find((item) => item.name === doctorName);
     if (!doctor || !date) return true;
+    if (!doctor.availableDays?.length) return true;
     return doctor.availableDays.includes(date.getDay());
   };
 
@@ -103,11 +123,6 @@ export default function ContactForm() {
   useEffect(() => {
     setIsClient(true);
 
-    const savedDoctor = localStorage.getItem("recommendedDoctor");
-    if (savedDoctor) {
-      setForm((current) => ({ ...current, doctor: savedDoctor }));
-    }
-
     const handleDoctorRecommended = (event) => {
       const doctor = event.detail?.doctor;
       if (doctor) {
@@ -119,10 +134,57 @@ export default function ContactForm() {
     return () => window.removeEventListener("doctor-recommended", handleDoctorRecommended);
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadLiveDoctorsForBooking() {
+      const [doctorResult, rosterResult] = await Promise.all([
+        supabase
+          .from("doctors")
+          .select("id,name,department,specialization,consultation_fee,status,availability_override")
+          .eq("status", "active")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("duty_rosters")
+          .select("doctor_id,duty_days,shift_start,shift_end")
+          .eq("person_type", "doctor"),
+      ]);
+
+      if (!isMounted || doctorResult.error || !doctorResult.data?.length) return;
+
+      const rosterByDoctorId = new Map((rosterResult.data || []).map((roster) => [roster.doctor_id, roster]));
+      const liveDoctors = doctorResult.data.map((doctor) => {
+        const roster = rosterByDoctorId.get(doctor.id);
+        const dutyDays = normalizeDutyDays(roster?.duty_days);
+
+        return {
+          ...doctor,
+          specialty: doctor.specialization || doctor.department || "Specialist",
+          availableDays: dutyDays.map((day) => DAY_TO_INDEX[day]).filter((day) => day !== undefined),
+          duty: roster ? formatShift(roster) : "Roster not set. Please confirm timing with the hospital.",
+          slotStart: roster?.shift_start || "10:00",
+          rosterMissing: !roster,
+        };
+      });
+
+      setBookingDoctors(liveDoctors);
+    }
+
+    loadLiveDoctorsForBooking();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleInitiatePayment = (e) => {
     e.preventDefault();
     if (!form.doctor) {
       alert("Please select a doctor first");
+      return;
+    }
+    if (!selectedDoctorFee) {
+      alert("Consultation fee is not set for this doctor. Please contact the hospital desk before payment.");
       return;
     }
     if (!form.date) {
@@ -220,11 +282,13 @@ export default function ContactForm() {
               className="bg-white rounded-[3rem] p-8 max-w-sm w-full text-center shadow-2xl border border-white/20"
             >
               <h3 className="text-2xl font-black text-slate-900 mb-1">Confirm Payment</h3>
-              <p className="text-slate-500 text-sm mb-6">Consultation Fee: Rs. {CONSULTATION_FEE}</p>
+              <p className="text-slate-500 text-sm mb-6">
+                {selectedDoctorFee ? `Consultation Fee: Rs. ${selectedDoctorFee}` : "Select a doctor to view the consultation fee"}
+              </p>
               
               <div className="bg-slate-50 p-4 rounded-[2.5rem] mb-6 border-2 border-slate-100 shadow-inner inline-block">
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=Ashraful%20Alom&am=${CONSULTATION_FEE}&cu=INR`} 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=Ashraful%20Alom&am=${selectedDoctorFee || 0}&cu=INR`} 
                   alt="UPI QR Code"
                   className="w-48 h-48 rounded-2xl"
                 />
@@ -234,7 +298,7 @@ export default function ContactForm() {
                 <div className="bg-blue-50 py-3 rounded-2xl border border-blue-100">
                     <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest mb-1">UPI ID</p>
                     <p className="text-sm font-bold text-slate-700">{UPI_ID}</p>
-                    <p className="mt-1 text-xs font-semibold text-slate-500">Pay Rs. {CONSULTATION_FEE} to complete the booking.</p>
+                    <p className="mt-1 text-xs font-semibold text-slate-500">Pay Rs. {selectedDoctorFee} to complete the booking.</p>
                 </div>
                 
                 <Button 
@@ -301,9 +365,9 @@ export default function ContactForm() {
                   value={form.doctor}
                   onChange={(e) => {
                     const doctorName = e.target.value;
-                    const doctor = doctors.find((item) => item.name === doctorName);
+                    const doctor = bookingDoctors.find((item) => item.name === doctorName);
 
-                    if (form.date && doctor && !doctor.availableDays.includes(form.date.getDay())) {
+                    if (form.date && doctor?.availableDays?.length && !doctor.availableDays.includes(form.date.getDay())) {
                       alert(`${doctorName} is not available on ${formatReadableDate(form.date)}. Please choose a date from ${doctor.availableDays.map((day) => DAY_NAMES[day]).join(", ")}.`);
                       setForm({ ...form, doctor: doctorName, date: null });
                       return;
@@ -315,7 +379,7 @@ export default function ContactForm() {
                   required
                 >
                   <option value="">Select Doctor</option>
-                  {doctors.map((doctor) => (
+                  {bookingDoctors.map((doctor) => (
                     <option key={doctor.name} value={doctor.name}>
                       {doctor.name} - {doctor.specialty}
                     </option>
@@ -323,7 +387,7 @@ export default function ContactForm() {
                 </select>
                 {selectedDoctorDetails ? (
                   <div className="rounded-2xl bg-blue-50 px-4 py-3 text-xs font-semibold text-blue-800">
-                    {selectedDoctorDetails.name} is available on {selectedDoctorDayText}. Duty time: {selectedDoctorDetails.duty}.
+                    {selectedDoctorDetails.name} is available on {selectedDoctorDayText}. Duty time: {selectedDoctorDetails.duty}. {selectedDoctorFee ? `Consultation fee: Rs. ${selectedDoctorFee}.` : "Fee not set."}
                   </div>
                 ) : null}
               </motion.div>

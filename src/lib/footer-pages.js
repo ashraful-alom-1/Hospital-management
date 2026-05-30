@@ -60,7 +60,7 @@ export const footerPages = {
     band: "bg-cyan-700",
     highlights: ["Cashless request support", "Admission document help", "Emergency processing guidance"],
     gallery: [
-      { title: "Help Desk", image: "/istockphoto-2160662813-612x612.jpg" },
+      { title: "Help Desk", image: "/Gemini_Generated_Image_b6s90b6s90b6s90b.png" },
       { title: "Pharmacy Billing", image: "/GettyImages-1993772667-645x645.jpg" },
       { title: "Hospital Location", image: "/Abhayapuri.png" },
     ],
@@ -91,16 +91,16 @@ export const footerPages = {
     title: "Work with a hospital team that serves the community",
     description:
       "A realistic careers page for doctors, nurses, technicians, pharmacists, front desk, billing, and patient support staff.",
-    image: "/lucid-origin_generate_an_image_of_female_doctor_who_is_wearing_hijab_also-0.jpg",
+    image: "/Advanced-X-ray-Radiography-Machine-with-Internal-Digital-CCD-Detector.avif",
     accentText: "text-emerald-600",
     band: "bg-emerald-700",
     ctaTitle: "Want to apply?",
     ctaText: "Send your resume by email or contact the hospital desk for available openings.",
     highlights: ["Clinical openings", "Admin and billing roles", "Supportive training culture"],
     gallery: [
-      { title: "Doctor Team", image: "/lucid-origin_generate_an_image_of_male_doctor-0.jpg" },
+      { title: "Diagnostic Lab", image: "/Gemini_Generated_Image_nelwx9nelwx9nelw.png" },
       { title: "Consultation Room", image: "/istockphoto-2160662813-612x612.jpg" },
-      { title: "Diagnostic Team", image: "/Advanced-X-ray-Radiography-Machine-with-Internal-Digital-CCD-Detector.avif" },
+      { title: "Diagnostic Team", image: "/Gemini_Generated_Image_2cl8ep2cl8ep2cl8.png" },
     ],
     roles: [
       { type: "Clinical", title: "Resident Doctors", text: "Support OPD, emergency response, patient review, and department coordination." },
@@ -203,7 +203,7 @@ export const servicePages = {
     gallery: [
       { title: "Cardiology Doctor", image: "/lucid-origin_generate_an_image_of_male_doctor-0.jpg" },
       { title: "Emergency Ward", image: "/emergency-ward-setup-service.jpg" },
-      { title: "Diagnostic Support", image: "/Advanced-X-ray-Radiography-Machine-with-Internal-Digital-CCD-Detector.avif" },
+      { title: "Diagnostic Support", image: "/Gemini_Generated_Image_nelwx9nelwx9nelw.png" },
     ],
     sections: [
       { title: "First Evaluation", text: "The doctor reviews symptoms, vitals, medicine history, and risk factors before suggesting tests." },
@@ -218,13 +218,13 @@ export const servicePages = {
     title: "Child care for fever, growth, and vaccination",
     description:
       "Pediatrics focuses on newborns, children, and teenagers with illness care, vaccination guidance, and family-friendly treatment plans.",
-    image: "/lucid-origin_generate_an_image_of_female_doctor_who_is_wearing_hijab_also-0.jpg",
+    image: "/Screenshot 2026-05-30 170703.png",
     accentText: "text-fuchsia-600",
     band: "bg-fuchsia-700",
     highlights: ["Child fever care", "Vaccination guidance", "Growth monitoring"],
     symptoms: ["Fever or cough", "Feeding difficulty", "Vomiting or diarrhea", "Skin rash or allergy", "Vaccination schedule questions"],
     gallery: [
-      { title: "Pediatric Doctor", image: "/lucid-origin_generate_an_image_of_female_doctor_who_is_wearing_hijab_also-0.jpg" },
+      { title: "Pediatric Doctor", image: "/Screenshot 2026-05-30 170703.png" },
       { title: "Family Consultation", image: "/istockphoto-2160662813-612x612.jpg" },
       { title: "Emergency Support", image: "/emergency-ward-setup-service.jpg" },
     ],
@@ -249,7 +249,7 @@ export const servicePages = {
     gallery: [
       { title: "Operation Theatre", image: "/ot-bg.jpg" },
       { title: "Surgery Consultation", image: "/istockphoto-2160662813-612x612.jpg" },
-      { title: "Recovery Support", image: "/emergency-ward-setup-service.jpg" },
+      { title: "Emergency Support", image: "/emergency-ward-setup-service.jpg" },
     ],
     sections: [
       { title: "Consultation", text: "The surgeon reviews the problem, reports, medicine history, allergies, and current fitness." },
@@ -271,7 +271,7 @@ export const servicePages = {
     symptoms: ["Need prescribed medicines", "Medicine refill support", "Dose timing confusion", "Allergy clarification", "Emergency medicine request"],
     gallery: [
       { title: "Pharmacy Counter", image: "/GettyImages-1993772667-645x645.jpg" },
-      { title: "Patient Desk", image: "/istockphoto-2160662813-612x612.jpg" },
+      { title: "Patient Desk", image: "/Gemini_Generated_Image_b6s90b6s90b6s90b.png" },
       { title: "Emergency Link", image: "/emergency-ward-setup-service.jpg" },
     ],
     sections: [
@@ -294,7 +294,7 @@ export const servicePages = {
     symptoms: ["Doctor advised blood test", "Health screening needed", "X-ray required", "Follow-up report review", "Fasting test questions"],
     gallery: [
       { title: "X-Ray Facility", image: "/Advanced-X-ray-Radiography-Machine-with-Internal-Digital-CCD-Detector.avif" },
-      { title: "Diagnostic Lab", image: "/istockphoto-2160662813-612x612.jpg" },
+      { title: "Diagnostic Lab", image: "/Gemini_Generated_Image_nelwx9nelwx9nelw.png" },
       { title: "Doctor Review", image: "/lucid-origin_generate_an_image_of_nurologist_specialist_doctor-0.jpg" },
     ],
     sections: [

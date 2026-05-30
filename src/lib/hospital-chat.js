@@ -3,6 +3,9 @@ export const quickPrompts = [
   "Which doctor should I consult?",
   "What are the hospital timings?",
   "How can I book an appointment?",
+  "Do you provide emergency services?",
+  "Are there any job openings?",
+  "I want to apply for a hospital job",
 ];
 
 const hospitalFacts = {
@@ -10,7 +13,6 @@ const hospitalFacts = {
   address: "Abhayapuri Ward No. 4, Bongaigaon, Assam - 783384",
   emergencyPhone: "+91 8822141629",
   email: "ashraful.abh@gmail.com",
-  consultationFee: "Rs. 10",
   emergencyHours: "24 Hours / 7 Days",
   opdHours: "9:00 AM to 6:00 PM, Monday to Saturday",
   diagnostics:
@@ -18,7 +20,7 @@ const hospitalFacts = {
   facilities:
     "Emergency Ward, Parking Area, Main Lobby, Operation Theatre, Dental Care Unit, Premium Patient Suite, Consultation Room, Pharmacy, and Diagnostic Lab.",
   payment:
-    "The booking flow currently shows UPI payment before appointment confirmation for project-demo purposes.",
+    "The booking flow uses the selected doctor's live consultation fee before appointment confirmation.",
   insurance:
     "Insurance partner details are not listed yet on the website, but the footer already has a placeholder link for future expansion.",
 };
@@ -384,6 +386,69 @@ const whyChooseKeywords = [
   "best hospital",
 ];
 
+const careerKeywords = [
+  "career",
+  "careers",
+  "job",
+  "jobs",
+  "vacancy",
+  "vacancies",
+  "opening",
+  "openings",
+  "apply",
+  "application",
+  "hire",
+  "hiring",
+  "recruitment",
+  "candidate",
+  "resume",
+  "cv",
+  "staff nurse",
+  "nurse job",
+  "doctor job",
+  "mbbs job",
+  "gnm",
+  "bsc nursing",
+  "radiology technician",
+  "lab technician",
+  "reception job",
+  "front desk job",
+  "pharmacist",
+  "qualification",
+  "eligibility",
+  "degree",
+  "experience required",
+  "salary",
+  "interview",
+  "kaam",
+  "naukri",
+  "job chahiye",
+  "vacancy hai",
+];
+
+const careerDegreeGuidance = [
+  {
+    keywords: ["mbbs", "doctor", "medical officer", "resident doctor", "rmo"],
+    text: "For doctor or resident medical officer roles, MBBS with valid registration is preferred. Emergency readiness, OPD review, patient communication, and ward coordination are important.",
+  },
+  {
+    keywords: ["gnm", "b.sc nursing", "bsc nursing", "nurse", "nursing"],
+    text: "For Staff Nurse roles, GNM or B.Sc Nursing is preferred. Registration, ward/OPD care, medicine timing, documentation, and calm patient handling are important.",
+  },
+  {
+    keywords: ["radiology", "xray", "x-ray", "technician", "diploma"],
+    text: "For Radiology Technician roles, a radiology diploma or X-ray handling experience is preferred, with patient positioning and safety protocol knowledge.",
+  },
+  {
+    keywords: ["reception", "front desk", "computer", "billing"],
+    text: "For Reception or Front Desk roles, computer basics, polite communication, appointment handling, and Assamese/Hindi/English communication are useful.",
+  },
+  {
+    keywords: ["pharmacy", "pharmacist", "d.pharm", "b.pharm"],
+    text: "For Pharmacy roles, D.Pharm or B.Pharm is preferred, along with prescription handling, stock awareness, and patient guidance.",
+  },
+];
+
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -397,15 +462,136 @@ function includesAny(text, keywords) {
   });
 }
 
-function getAllDoctorsText() {
-  return doctors
+const departmentKeywordMap = [
+  { match: ["cardiology", "cardiac", "heart"], keywords: ["heart", "cardio", "cardiology", "chest pain", "chest", "bp", "blood pressure", "hypertension", "ecg", "palpitation", "dil"] },
+  { match: ["pediatric", "paediatric", "child"], keywords: ["child", "children", "baby", "pediatric", "kid", "vaccination", "vaccine", "fever", "cold", "bachcha", "bacha"] },
+  { match: ["neurology", "neuro", "brain"], keywords: ["brain", "neuro", "neurology", "headache", "migraine", "seizure", "stroke", "nerve", "dizziness", "sleep", "anxiety"] },
+  { match: ["oncology", "cancer"], keywords: ["cancer", "oncology", "tumor", "tumour", "lump", "chemotherapy", "biopsy"] },
+  { match: ["dentistry", "dental", "dentist"], keywords: ["tooth", "teeth", "dental", "dentist", "gum", "cavity", "mouth", "daant", "dant"] },
+  { match: ["dermatology", "derma", "skin"], keywords: ["skin", "derma", "dermatology", "rash", "acne", "hair", "itching", "allergy", "khujli"] },
+  { match: ["endocrinology", "diabetes", "thyroid"], keywords: ["diabetes", "sugar", "thyroid", "hormone", "endocrine", "weight"] },
+  { match: ["surgery", "surgeon"], keywords: ["surgery", "surgeon", "appendix", "hernia", "wound", "piles", "operation", "stomach", "abdominal", "knee", "injury"] },
+  { match: ["gynecology", "gynecologist", "gynaecology", "women"], keywords: ["gynecology", "women", "female", "pregnancy", "pregnant", "period", "menstruation", "pcos", "pcod", "fertility"] },
+  { match: ["gastro", "gastroenterology"], keywords: ["acidity", "heartburn", "gastric", "gas", "constipation", "diarrhea", "stomach", "liver", "jaundice", "ulcer"] },
+  { match: ["ophthalmology", "eye"], keywords: ["eye", "vision", "blurry vision", "cataract", "glaucoma", "dry eye", "aankh"] },
+  { match: ["ent", "ear", "nose", "throat"], keywords: ["ear", "nose", "throat", "hearing", "sinus", "tonsils", "cold", "kaan", "gala"] },
+  { match: ["urology", "urologist"], keywords: ["urology", "urologist", "urine", "kidney", "stone", "fertility", "sexual health"] },
+];
+
+const rosterDayOrder = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+const rosterDayLabels = {
+  monday: "Monday",
+  tuesday: "Tuesday",
+  wednesday: "Wednesday",
+  thursday: "Thursday",
+  friday: "Friday",
+  saturday: "Saturday",
+  sunday: "Sunday",
+};
+
+function normalizeTime(time) {
+  if (!time) return "";
+  return String(time).slice(0, 5);
+}
+
+function normalizeRosterDays(days) {
+  if (Array.isArray(days)) {
+    return days
+      .map((day) => String(day || "").toLowerCase().trim())
+      .map((day) => {
+        const numberMap = {
+          "1": "monday",
+          "2": "tuesday",
+          "3": "wednesday",
+          "4": "thursday",
+          "5": "friday",
+          "6": "saturday",
+          "0": "sunday",
+        };
+        return numberMap[day] || day;
+      })
+      .filter((day) => rosterDayOrder.includes(day));
+  }
+
+  return String(days || "")
+    .replace(/[{}"]/g, "")
+    .split(",")
+    .map((day) => day.trim().toLowerCase())
+    .filter((day) => rosterDayOrder.includes(day));
+}
+
+function getTodayRosterKey(date = new Date()) {
+  return rosterDayOrder[(date.getDay() + 6) % 7];
+}
+
+function formatDoctorFee(doctor) {
+  const fee = Number(doctor?.consultation_fee);
+  return fee ? `Rs. ${fee}` : "Fee not set";
+}
+
+function formatDoctorDuty(doctor) {
+  if (doctor.duty) return doctor.duty;
+
+  const dutyDays = normalizeRosterDays(doctor.duty_days)
+    .map((day) => rosterDayLabels[day] || day)
+    .join(", ");
+  const start = normalizeTime(doctor.shift_start);
+  const end = normalizeTime(doctor.shift_end);
+
+  if (dutyDays && start && end) return `${dutyDays} - ${start} to ${end}`;
+  if (start && end) return `${start} to ${end}`;
+  return "Please confirm duty timing with the hospital desk";
+}
+
+function buildDoctorKeywords(doctor) {
+  const baseText = [
+    doctor.name,
+    doctor.specialty,
+    doctor.specialization,
+    doctor.department,
+    doctor.qualification,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  const generated = baseText.split(/[^a-z0-9]+/).filter((word) => word.length > 2);
+  const mapped = departmentKeywordMap
+    .filter((item) => item.match.some((keyword) => baseText.includes(keyword)))
+    .flatMap((item) => item.keywords);
+
+  return [...new Set([...(doctor.keywords || []), ...generated, ...mapped])];
+}
+
+function normalizeDoctorSource(sourceDoctors = doctors) {
+  const safeDoctors = Array.isArray(sourceDoctors) && sourceDoctors.length ? sourceDoctors : doctors;
+
+  return safeDoctors.map((doctor) => {
+    const specialty = doctor.specialty || doctor.specialization || doctor.department || "Specialist";
+
+    return {
+      ...doctor,
+      name: doctor.name,
+      specialty,
+      careFor: doctor.careFor || `${specialty} consultation and related patient care`,
+      duty: formatDoctorDuty(doctor),
+      slotStart: doctor.slotStart || normalizeTime(doctor.shift_start) || "09:00",
+      availableDays: doctor.availableDays || [],
+      duty_days: normalizeRosterDays(doctor.duty_days),
+      consultation_fee: doctor.consultation_fee,
+      keywords: buildDoctorKeywords({ ...doctor, specialty }),
+    };
+  });
+}
+
+function getAllDoctorsText(sourceDoctors = doctors) {
+  return normalizeDoctorSource(sourceDoctors)
     .map((doctor) => `${doctor.name} (${doctor.specialty}) - Duty: ${doctor.duty}`)
     .join("\n");
 }
 
 function getDoctorReply(doctor) {
   return {
-    text: `For ${doctor.careFor}, you should consult ${doctor.name} (${doctor.specialty}). Duty time: ${doctor.duty}. Would you like to book an appointment? If the patient has emergency symptoms such as severe pain, breathing difficulty, unconsciousness, or heavy bleeding, please call ${hospitalFacts.emergencyPhone} immediately.`,
+    text: `For ${doctor.careFor}, you should consult ${doctor.name} (${doctor.specialty}). Duty time: ${doctor.duty}. Consultation fee: ${formatDoctorFee(doctor)}. Would you like to book an appointment? If the patient has emergency symptoms such as severe pain, breathing difficulty, unconsciousness, or heavy bleeding, please call ${hospitalFacts.emergencyPhone} immediately.`,
     actionLabel: "Book appointment",
     actionTarget: "contact",
     recommendedDoctor: doctor.name,
@@ -415,7 +601,7 @@ function getDoctorReply(doctor) {
 
 function getDoctorDutyReply(doctor) {
   return {
-    text: `${doctor.name} (${doctor.specialty}) duty time: ${doctor.duty}. This doctor handles ${doctor.careFor}. Would you like to book an appointment with ${doctor.name}?`,
+    text: `${doctor.name} (${doctor.specialty}) duty time: ${doctor.duty}. Consultation fee: ${formatDoctorFee(doctor)}. This doctor handles ${doctor.careFor}. Would you like to book an appointment with ${doctor.name}?`,
     actionLabel: "Book appointment",
     actionTarget: "contact",
     recommendedDoctor: doctor.name,
@@ -423,12 +609,12 @@ function getDoctorDutyReply(doctor) {
   };
 }
 
-function findDoctorBySymptoms(normalized) {
-  return doctors.find((doctor) => includesAny(normalized, doctor.keywords));
+function findDoctorBySymptoms(normalized, sourceDoctors = doctors) {
+  return normalizeDoctorSource(sourceDoctors).find((doctor) => includesAny(normalized, doctor.keywords));
 }
 
-function findDoctorByNameOrSpecialty(normalized) {
-  return doctors.find((doctor) => {
+function findDoctorByNameOrSpecialty(normalized, sourceDoctors = doctors) {
+  return normalizeDoctorSource(sourceDoctors).find((doctor) => {
     const doctorName = doctor.name.toLowerCase();
     const shortName = doctorName.replace("dr. ", "").replace("dr ", "");
     const specialty = doctor.specialty.toLowerCase();
@@ -452,6 +638,97 @@ function wantsDoctorDuty(normalized) {
     "when",
     "kab",
   ]);
+}
+
+function wantsAvailableDoctorsToday(normalized) {
+  return includesAny(normalized, [
+    "which doctors are available today",
+    "doctors available today",
+    "available doctors today",
+    "doctor available today",
+    "who is available today",
+    "today available doctor",
+    "today doctors",
+    "doctor on duty today",
+    "doctors on duty today",
+  ]);
+}
+
+function wantsStaffCount(normalized) {
+  return includesAny(normalized, [
+    "how many staff",
+    "how many staff members",
+    "number of staff",
+    "total staff",
+    "staff count",
+    "staff members do you have",
+  ]);
+}
+
+function isEmergencyDoctorQuestion(normalized) {
+  return includesAny(normalized, [
+    "emergency doctor",
+    "emergency doctors",
+    "doctor in emergency",
+    "doctor for emergency",
+    "emergency duty doctor",
+    "who is the emergency doctor",
+    "emergency department doctor",
+  ]);
+}
+
+function wantsDoctorFee(normalized) {
+  return includesAny(normalized, ["fee", "fees", "price", "cost", "charge", "consultation fee"]);
+}
+
+function getAvailableDoctorsTodayReply(activeDoctors) {
+  const today = getTodayRosterKey();
+  const availableDoctors = activeDoctors.filter((doctor) => doctor.duty_days?.includes(today));
+
+  if (!availableDoctors.length) {
+    return {
+      text: "I could not find any doctor rostered for today in the live duty roster. Please contact the hospital desk to confirm availability.",
+      actionLabel: "Go to contact",
+      actionTarget: "contact",
+      nextTopic: "doctors",
+    };
+  }
+
+  const lines = availableDoctors.map((doctor, index) => `${index + 1}. ${doctor.name} (${doctor.specialty}) - ${doctor.duty}. Fee: ${formatDoctorFee(doctor)}`);
+
+  return {
+    text: `Doctors available today:\n${lines.join("\n")}`,
+    actionLabel: "Meet doctors",
+    actionTarget: "doctors",
+    nextTopic: "doctors",
+  };
+}
+
+function getEmergencyDoctorReply(activeDoctors) {
+  const emergencyDoctors = activeDoctors.filter((doctor) => {
+    const text = `${doctor.department || ""} ${doctor.specialty || ""} ${doctor.specialization || ""}`.toLowerCase();
+    return text.includes("emergency");
+  });
+  const doctorsToShow = emergencyDoctors.length ? emergencyDoctors : activeDoctors.filter((doctor) => doctor.duty_days?.includes(getTodayRosterKey()));
+
+  if (!doctorsToShow.length) {
+    return {
+      text: `I could not find a doctor specifically marked for Emergency in the live roster. Please call ${hospitalFacts.emergencyPhone} and the hospital desk will connect you to the emergency duty doctor.`,
+      actionLabel: "Go to contact",
+      actionTarget: "contact",
+      nextTopic: "doctors",
+    };
+  }
+
+  const lines = doctorsToShow.map((doctor, index) => `${index + 1}. ${doctor.name} (${doctor.specialty}) - ${doctor.duty}. Fee: ${formatDoctorFee(doctor)}`);
+
+  return {
+    text: `${emergencyDoctors.length ? "Emergency doctor information:" : "No Emergency department doctor is separately marked, but these doctors are rostered today:"}\n${lines.join("\n")}`,
+    actionLabel: "Book appointment",
+    actionTarget: "contact",
+    recommendedDoctor: doctorsToShow[0]?.name,
+    nextTopic: "doctors",
+  };
 }
 
 function isOnlyVaguePain(normalized) {
@@ -499,6 +776,21 @@ function wantsDoctorCount(normalized) {
   ]);
 }
 
+function getCareerReply(normalized) {
+  const matchedGuidance = careerDegreeGuidance.find((item) => includesAny(normalized, item.keywords));
+  const guidance =
+    matchedGuidance?.text ||
+    "We may have openings for resident doctors, staff nurses, radiology/lab technicians, pharmacy assistants, reception/front desk, billing, and patient support roles. Eligibility depends on the post and candidate qualification.";
+
+  return {
+    text: `${guidance}\n\nPlease share candidate details below. The AI will send the application to the hospital team and show a submit button. You can also open the Careers page to see current vacancies.`,
+    actionLabel: "Open Careers",
+    actionTarget: "careers",
+    careerForm: true,
+    nextTopic: "careers",
+  };
+}
+
 const knowledgeBase = [
   {
     keywords: ["hello", "hi", "hey", "namaste", "assalamualaikum", "hii", "helo", "helloo", "hlo", "heyy"],
@@ -533,7 +825,7 @@ const knowledgeBase = [
   {
     keywords: ["appointment", "book", "booking", "visit", "consultation"],
     reply: {
-      text: `You can book from the Book Your Visit section on this page. The flow asks for your name, email, phone number, preferred date, and consultation reason. The form currently shows a consultation fee of ${hospitalFacts.consultationFee} before confirmation.`,
+      text: "You can book from the Book Your Visit section on this page. The flow asks for your name, email, phone number, doctor, preferred date, and consultation reason. The consultation fee is loaded from the selected doctor's live profile before payment.",
       actionLabel: "Open booking form",
       actionTarget: "contact",
     },
@@ -541,7 +833,7 @@ const knowledgeBase = [
   {
     keywords: ["fee", "fees", "price", "cost", "charge", "consultation fee"],
     reply: {
-      text: `The current consultation fee shown in the booking flow is ${hospitalFacts.consultationFee}. This is presented in the payment modal before final appointment confirmation.`,
+      text: "Consultation fees are doctor-specific and are loaded from the live doctor profile. Please select or name a doctor to see the correct fee.",
       actionLabel: "Open booking form",
       actionTarget: "contact",
     },
@@ -670,20 +962,15 @@ export function getFollowUpReply(topic) {
   );
 }
 
-export function getHospitalChatReply(input, lastTopic = "contact") {
+export function getHospitalChatReply(input, lastTopic = "contact", doctorSource = doctors, staffSource = []) {
   const normalized = String(input || "").toLowerCase().trim();
+  const activeDoctors = normalizeDoctorSource(doctorSource);
+  const activeStaff = Array.isArray(staffSource) ? staffSource : [];
 
   if (!normalized) {
     return {
       text: "Please type a question. For example: booking, doctors, services, emergency, or location.",
       nextTopic: lastTopic,
-    };
-  }
-
-  if (includesAny(normalized, emergencyKeywords)) {
-    return {
-      text: `This may be an emergency. ${hospitalFacts.name} provides emergency service ${hospitalFacts.emergencyHours}. Please call ${hospitalFacts.emergencyPhone} immediately or visit the nearest emergency ward. If the patient is stable, describe the symptoms and I can suggest a suitable doctor.`,
-      nextTopic: "contact",
     };
   }
 
@@ -696,7 +983,26 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     };
   }
 
-  const namedDoctor = findDoctorByNameOrSpecialty(normalized);
+  if (includesAny(normalized, careerKeywords)) {
+    return getCareerReply(normalized);
+  }
+
+  if (wantsStaffCount(normalized)) {
+    return {
+      text: `We currently have ${activeStaff.length} staff member${activeStaff.length === 1 ? "" : "s"} listed in the live staff system.`,
+      nextTopic: "staff",
+    };
+  }
+
+  if (wantsAvailableDoctorsToday(normalized)) {
+    return getAvailableDoctorsTodayReply(activeDoctors);
+  }
+
+  if (isEmergencyDoctorQuestion(normalized)) {
+    return getEmergencyDoctorReply(activeDoctors);
+  }
+
+  const namedDoctor = findDoctorByNameOrSpecialty(normalized, activeDoctors);
 
   if (namedDoctor) {
     if (wantsDoctorDuty(normalized)) {
@@ -704,7 +1010,7 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     }
 
     return {
-      text: `${namedDoctor.name} is our ${namedDoctor.specialty} specialist. This doctor handles ${namedDoctor.careFor}. Duty time: ${namedDoctor.duty}.`,
+      text: `${namedDoctor.name} is our ${namedDoctor.specialty} specialist. This doctor handles ${namedDoctor.careFor}. Duty time: ${namedDoctor.duty}. Consultation fee: ${formatDoctorFee(namedDoctor)}.`,
       actionLabel: "Book appointment",
       actionTarget: "contact",
       recommendedDoctor: namedDoctor.name,
@@ -712,10 +1018,26 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
     };
   }
 
-  const matchedDoctor = findDoctorBySymptoms(normalized);
+  const matchedDoctor = findDoctorBySymptoms(normalized, activeDoctors);
 
   if (matchedDoctor) {
     return getDoctorReply(matchedDoctor);
+  }
+
+  if (wantsDoctorFee(normalized)) {
+    return {
+      text: "Please select or name a doctor to see the live consultation fee. Doctor-specific fees are managed from the admin panel.",
+      actionLabel: "Book appointment",
+      actionTarget: "contact",
+      nextTopic: "contact",
+    };
+  }
+
+  if (includesAny(normalized, emergencyKeywords)) {
+    return {
+      text: `This may be an emergency. ${hospitalFacts.name} provides emergency service ${hospitalFacts.emergencyHours}. Please call ${hospitalFacts.emergencyPhone} immediately or visit the nearest emergency ward. If the patient is stable, describe the symptoms and I can suggest a suitable doctor.`,
+      nextTopic: "contact",
+    };
   }
 
   if (isOnlyVaguePain(normalized)) {
@@ -727,7 +1049,7 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
 
   if (wantsDoctorCount(normalized)) {
     return {
-      text: `We currently have ${doctors.length} specialist doctors listed on this website:\n${getAllDoctorsText()}`,
+      text: `We currently have ${activeDoctors.length} specialist doctors listed on this website:\n${getAllDoctorsText(activeDoctors)}`,
       actionLabel: "Meet doctors",
       actionTarget: "doctors",
       nextTopic: "doctors",
@@ -736,7 +1058,7 @@ export function getHospitalChatReply(input, lastTopic = "contact") {
 
   if (wantsAllDoctors(normalized)) {
     return {
-      text: `Our doctors:\n${getAllDoctorsText()}\n\nIf the patient has a specific problem, type the symptom. I will suggest only the relevant doctor.`,
+      text: `Our doctors:\n${getAllDoctorsText(activeDoctors)}\n\nIf the patient has a specific problem, type the symptom. I will suggest only the relevant doctor.`,
       actionLabel: "Meet doctors",
       actionTarget: "doctors",
       nextTopic: "doctors",
