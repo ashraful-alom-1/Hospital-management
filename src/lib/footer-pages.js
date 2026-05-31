@@ -126,7 +126,7 @@ export const footerPages = {
     highlights: ["Appointment details protected", "Used for patient follow-up", "Shared only for hospital support"],
     gallery: [
       { title: "Hospital Identity", image: "/Abhayapuri.png" },
-      { title: "Patient Desk", image: "/istockphoto-2160662813-612x612.jpg" },
+      { title: "Consultation Room", image: "/istockphoto-2160662813-612x612.jpg" },
       { title: "Emergency Support", image: "/emergency-ward-setup-service.jpg" },
     ],
     sections: [
