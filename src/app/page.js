@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import ContactForm from "@/components/ui/ContactForm";
 import HospitalChatWidget from "@/components/ui/HospitalChatWidget";
 import { Button } from "@/components/ui/button";
+import HorizonHeroSection from "@/components/ui/horizon-hero-section";
 import { defaultDoctors } from "@/lib/careers";
 import { supabase } from "@/lib/supabase";
 import { 
@@ -615,41 +616,8 @@ export default function Home() {
 </nav>
 
       {/* --- HERO SECTION --- */}
-      <section 
-        id="home"
-        className="relative min-h-screen flex items-center justify-center pt-44 sm:pt-32 overflow-hidden px-4 sm:px-6"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(15, 23, 42, 0.9)), url('/ot-bg.jpg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed',
-        }}
-      >
-        <motion.div initial="hidden" animate="visible" className="text-center max-w-5xl w-full z-10">
-          <motion.div variants={fadeInUp} className="mb-6">
-            <span className="inline-block max-w-full bg-white text-blue-700 px-4 py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wide sm:tracking-widest border border-slate-200">
-              BONGAIGAON&apos;S PREMIER HEALTHCARE
-            </span>
-          </motion.div>
-          
-          <motion.h1 variants={fadeInUp} className="text-5xl sm:text-6xl md:text-[100px] font-black leading-[0.95] md:leading-[0.9] tracking-tight text-white mb-6 sm:mb-8">
-            Your Health, <br/> <span className="text-blue-400 font-extrabold italic">Our Priority.</span>
-          </motion.h1>
-          
-          <motion.p variants={fadeInUp} className="text-base sm:text-xl text-slate-300 mb-8 sm:mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-            Experience world-class diagnostic facilities and expert medical consultations 
-            with Abhayapuri Care Hospital&apos;s compassionate team.
-          </motion.p>
-          
-          <motion.div variants={fadeInUp}>
-            <Button 
-              onClick={() => scrollTo('contact', 80)}
-              className="w-full max-w-[320px] sm:w-auto sm:max-w-none bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-12 py-6 sm:py-9 rounded-2xl text-base sm:text-xl font-black shadow-2xl transition-transform active:scale-95"
-            >
-              Book An Appointment Now
-            </Button>
-          </motion.div>
-        </motion.div>
+      <section id="home" className="relative w-full">
+        <HorizonHeroSection onBookClick={() => scrollTo('contact', 80)} />
       </section>
 
       {/* --- WHY CHOOSE US SECTION --- */}

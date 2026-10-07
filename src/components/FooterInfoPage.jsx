@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, CheckCircle2, FileText, Phone } from "lucide-react";
 import CareerApplication from "@/components/CareerApplication";
+import { MedicalAmbientBackground } from "@/components/ui/medical-ambient-background";
 
 function Hero({ page }) {
   return (
-    <section className="bg-white">
+    <section className="relative z-10 bg-white/70 backdrop-blur-md border-b border-slate-200/50">
       <div className="mx-auto grid min-h-[520px] max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-14">
         <div className="flex flex-col justify-center">
           <Link
@@ -26,7 +27,7 @@ function Hero({ page }) {
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             {page.highlights.map((item) => (
-              <div key={item} className="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+              <div key={item} className="rounded-lg bg-white/50 backdrop-blur-sm p-4 ring-1 ring-slate-200/60 shadow-sm">
                 <CheckCircle2 className={`mb-3 h-5 w-5 ${page.accentText}`} />
                 <p className="text-sm font-black text-slate-900">{item}</p>
               </div>
@@ -80,7 +81,7 @@ function StoryLayout({ page }) {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {page.sections.map((section) => (
-            <article key={section.title} className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <article key={section.title} className="rounded-lg bg-white/70 backdrop-blur-sm p-6 shadow-sm ring-1 ring-slate-200/60">
               <h3 className="text-xl font-black text-slate-950">{section.title}</h3>
               <p className="mt-4 text-sm leading-7 text-slate-600">{section.text}</p>
             </article>
@@ -96,7 +97,7 @@ function InsuranceLayout({ page }) {
     <section className="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_0.8fr] lg:px-8">
       <div className="space-y-4">
         {page.steps.map((step, index) => (
-          <div key={step.title} className="flex gap-4 rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+          <div key={step.title} className="flex gap-4 rounded-lg bg-white/70 backdrop-blur-sm p-5 shadow-sm ring-1 ring-slate-200/60">
             <div className={`flex h-10 w-10 flex-none items-center justify-center rounded-lg ${page.badge} text-sm font-black`}>
               {index + 1}
             </div>
@@ -125,7 +126,7 @@ function CareersLayout({ page }) {
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {page.roles.map((role) => (
-          <article key={role.title} className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          <article key={role.title} className="rounded-lg bg-white/70 backdrop-blur-sm p-6 shadow-sm ring-1 ring-slate-200/60">
             <p className={`text-xs font-black uppercase tracking-wider ${page.accentText}`}>{role.type}</p>
             <h2 className="mt-3 text-xl font-black text-slate-950">{role.title}</h2>
             <p className="mt-3 text-sm leading-7 text-slate-600">{role.text}</p>
@@ -149,7 +150,7 @@ function CareersLayout({ page }) {
 function LegalLayout({ page }) {
   return (
     <section className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-8">
-      <aside className="h-fit rounded-lg bg-white p-5 ring-1 ring-slate-200">
+      <aside className="h-fit rounded-lg bg-white/70 backdrop-blur-sm p-5 ring-1 ring-slate-200/60 shadow-sm">
         <p className="text-xs font-black uppercase tracking-wider text-slate-400">Page Sections</p>
         <div className="mt-4 space-y-2">
           {page.sections.map((section) => (
@@ -161,7 +162,7 @@ function LegalLayout({ page }) {
       </aside>
       <div className="space-y-4">
         {page.sections.map((section) => (
-          <article id={section.title.toLowerCase().replaceAll(" ", "-")} key={section.title} className="rounded-lg bg-white p-6 ring-1 ring-slate-200">
+          <article id={section.title.toLowerCase().replaceAll(" ", "-")} key={section.title} className="rounded-lg bg-white/70 backdrop-blur-sm p-6 ring-1 ring-slate-200/60 shadow-sm">
             <h2 className="text-2xl font-black text-slate-950">{section.title}</h2>
             <p className="mt-4 text-sm leading-8 text-slate-600">{section.text}</p>
           </article>
@@ -188,7 +189,7 @@ function ServiceLayout({ page }) {
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {page.sections.map((section) => (
-            <article key={section.title} className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <article key={section.title} className="rounded-lg bg-white/70 backdrop-blur-sm p-6 shadow-sm ring-1 ring-slate-200/60">
               <h2 className="text-xl font-black text-slate-950">{section.title}</h2>
               <p className="mt-4 text-sm leading-7 text-slate-600">{section.text}</p>
             </article>
@@ -236,7 +237,8 @@ function CTA({ page }) {
 
 export default function FooterInfoPage({ page }) {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="relative min-h-screen text-slate-900">
+      <MedicalAmbientBackground variant={page.template || "subtle"} />
       <Hero page={page} />
       {page.template === "story" && <StoryLayout page={page} />}
       {page.template === "insurance" && <InsuranceLayout page={page} />}
